@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, User, LogOut, Settings } from "lucide-react";
+import { ChevronDown, User, LogOut, Settings, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
@@ -7,11 +7,11 @@ export default function Navbar() {
     const navItems = [
         { name: "Home", to: "/" },
         { name: "Register", to: "/register" },
-        { name: "ViewsProjects", to: "/viewprojects" },
+        { name: "Browse Projects", to: "/viewprojects" },
         { name: "About", to: "/about" },
     ];
     return (
-        <nav className="bg-white shadow-md px-6 py-3 flex justify-between items-center">
+        <nav className="bg-white shadow-md px-64 py-3 flex justify-between items-center h-20">
             {/* Logo */}
             <div>
                 <Link to="/" className="text-3xl font-bold text-indigo-600">
@@ -61,7 +61,7 @@ export default function Navbar() {
                             to="/login"
                             className="flex items-center px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
                         >
-                            <Settings className="w-4 h-4 mr-2" /> Login
+                            <LogIn className="w-4 h-4 mr-2" /> Login
                         </Link>
                         <Link
                             to="/"
