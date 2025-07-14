@@ -24,10 +24,10 @@ export default function Register() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full  px-4 " style={{ marginTop: "10rem" }} >
+        <div className="flex flex-col items-center justify-center overflow-auto  px-4 " style={{ marginTop: "10rem" }} >
             <div
                 className="bg-white p-8 rounded-2xl  max-w-md w-full
-                   max-h-[calc(100vh-8rem)] overflow-auto shadow-2xl border border-gray-300"
+                   max-h-[calc(100vh-8rem)] overflow-auto shadow-2xl border border-gray-300 "
             >
                 <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
                     Create an Account

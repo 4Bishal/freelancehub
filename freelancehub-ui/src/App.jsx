@@ -9,11 +9,11 @@ import ClientDashboard from "./pages/ClientDashboard";
 import FreelancerDashboard from "./pages/FreelancerDashboard";
 import PostProject from "./pages/PostProject";
 import ProjectDetail from "./pages/ProjectDetail";
-import ViewProjects from "./pages/ViewProjects";
 import Navbar from './components/Navbar';
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import About from "./pages/About";
+import BrowseProjects from "./pages/BrowseProjects";
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
       <Navbar />
 
       {/* Main content grows to fill available space */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 overflow-auto">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -38,41 +38,41 @@ function App() {
           <Route
             path="/clientdashboard"
             element={
-              <ProtectedRoute role="client">
-                <ClientDashboard />
-              </ProtectedRoute>
+              // <ProtectedRoute role="client">
+              <ClientDashboard />
+              // </ProtectedRoute>
             }
           />
           <Route
             path="/freelancerdashboard"
             element={
-              <ProtectedRoute role="freelancer">
-                <FreelancerDashboard />
-              </ProtectedRoute>
+              // <ProtectedRoute role="freelancer">
+              <FreelancerDashboard />
+              //  </ProtectedRoute> 
             }
           />
           <Route
             path="/postproject"
             element={
-              <ProtectedRoute role="client">
-                <PostProject />
-              </ProtectedRoute>
+              // <ProtectedRoute role="client">
+              <PostProject />
+              // </ProtectedRoute>
             }
           />
           <Route
             path="/projectdetail"
             element={
-              <ProtectedRoute role="freelancer">
-                <ProjectDetail />
-              </ProtectedRoute>
+              // <ProtectedRoute role="freelancer">
+              <ProjectDetail />
+              //  </ProtectedRoute> 
             }
           />
           <Route
-            path="/viewprojects"
+            path="/browseprojects"
             element={
-              <ProtectedRoute role="freelancer">
-                <ViewProjects />
-              </ProtectedRoute>
+              // <ProtectedRoute role="freelancer">
+              <BrowseProjects />
+              //  </ProtectedRoute> 
             }
           />
           <Route path="/about" element={<About />} />

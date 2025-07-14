@@ -12,13 +12,13 @@ const HeroSection = () => {
 
             <div className="flex justify-center gap-6">
                 <Link
-                    to="/post-project"
+                    to="/postproject"
                     className="bg-blue-700 hover:bg-blue-800 text-white px-8 py-3 rounded-md font-semibold shadow-md transition"
                 >
                     Post Your Project
                 </Link>
                 <Link
-                    to="/projects"
+                    to="/browseprojects"
                     className="bg-white border-2 border-blue-700 text-blue-700 px-8 py-3 rounded-md font-semibold shadow-md hover:bg-blue-50 transition"
                 >
                     Browse Projects

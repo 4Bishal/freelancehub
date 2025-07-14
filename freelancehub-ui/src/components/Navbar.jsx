@@ -6,9 +6,10 @@ export default function Navbar() {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const navItems = [
         { name: "Home", to: "/" },
+        { name: "Browse Projects", to: "/browseprojects" },
         { name: "Register", to: "/register" },
-        { name: "Browse Projects", to: "/viewprojects" },
-        { name: "About", to: "/about" },
+        { name: "Login", to: "/login" },
+        { name: "About", to: "/about" }
     ];
     return (
         <nav className="bg-white shadow-md px-64 py-3 flex justify-between items-center h-20">
@@ -51,26 +52,24 @@ export default function Navbar() {
                     <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
                         <Link
                             to="/clientdashboard"
+                            onClick={() => setDropdownOpen(false)}
                             className="flex items-center px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
                         >
                             <User className="w-4 h-4 mr-2" /> Dashboard
                         </Link>
 
                         <div className="border-t my-1"></div>
-                        <Link
-                            to="/login"
-                            className="flex items-center px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
-                        >
-                            <LogIn className="w-4 h-4 mr-2" /> Login
-                        </Link>
+
                         <Link
                             to="/"
+                            onClick={() => setDropdownOpen(false)}
                             className="flex items-center px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
                         >
                             <LogOut className="w-4 h-4 mr-2" /> Logout
                         </Link>
                     </div>
                 )}
+
             </div>
         </nav>
     );
