@@ -1,10 +1,9 @@
 import React from "react";
-import { Routes, Route } from "react-router";
+import { Routes, Route } from "react-router-dom";  // use react-router-dom instead of react-router
 import Home from './pages/HomePage/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import NotFound from "./pages/NotFound";
-import MyBids from "./pages/MyBids";
 import ClientDashboard from "./pages/ClientDashboard";
 import FreelancerDashboard from "./pages/FreelancerDashboard";
 import PostProject from "./pages/PostProject";
@@ -24,59 +23,58 @@ function App() {
       {/* Main content grows to fill available space */}
       <main className="flex-1 overflow-auto">
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route
-            path="/mybids"
-            element={
-              <ProtectedRoute role="freelancer">
-                <MyBids />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/clientdashboard"
-            element={
-              // <ProtectedRoute role="client">
-              <ClientDashboard />
-              // </ProtectedRoute>
-            }
-          />
+          <Route path="/about" element={<About />} />
+          <Route path="/*" element={<NotFound />} />
+
+          {/* Protected Routes */}
+
+          {/* Freelancer only */}
           <Route
             path="/freelancerdashboard"
             element={
-              // <ProtectedRoute role="freelancer">
-              <FreelancerDashboard />
-              //  </ProtectedRoute> 
-            }
-          />
-          <Route
-            path="/postproject"
-            element={
-              // <ProtectedRoute role="client">
-              <PostProject />
-              // </ProtectedRoute>
+              <ProtectedRoute allowedRoles={["freelancer"]}>
+                <FreelancerDashboard />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/projectdetail"
             element={
-              // <ProtectedRoute role="freelancer">
-              <ProjectDetail />
-              //  </ProtectedRoute> 
+              <ProtectedRoute allowedRoles={["freelancer"]}>
+                <ProjectDetail />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/browseprojects"
             element={
-              // <ProtectedRoute role="freelancer">
-              <BrowseProjects />
-              //  </ProtectedRoute> 
+              <ProtectedRoute allowedRoles={["freelancer"]}>
+                <BrowseProjects />
+              </ProtectedRoute>
             }
           />
-          <Route path="/about" element={<About />} />
-          <Route path="/*" element={<NotFound />} />
+
+          {/* Client only */}
+          <Route
+            path="/clientdashboard"
+            element={
+              <ProtectedRoute allowedRoles={["client"]}>
+                <ClientDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/postproject"
+            element={
+              <ProtectedRoute allowedRoles={["client"]}>
+                <PostProject />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
 

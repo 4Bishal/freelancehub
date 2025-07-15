@@ -112,6 +112,8 @@ const allProjects = [
 const categories = Array.from(new Set(allProjects.map(p => p.category)));
 
 const BrowseProjects = () => {
+
+
     // Filter and sort states
     const [budgetRange, setBudgetRange] = useState([0, 1000]);
     const [selectedCategory, setSelectedCategory] = useState("");

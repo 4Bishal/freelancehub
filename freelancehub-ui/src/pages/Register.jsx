@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, User, Lock, Briefcase } from "lucide-react";
+import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Register() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: "",
         username: "",
@@ -17,10 +20,46 @@ export default function Register() {
         }));
     };
 
-    const handleSubmit = (e) => {
+
+    const handleError = (err) =>
+        toast.error(err, {
+            position: "bottom-left",
+        });
+    const handleSuccess = (msg) =>
+        toast.success(msg, {
+            position: "bottom-right",
+        });
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Registering:", formData);
-        // Registration logic goes here
+        try {
+            const { data } = await axios.post(
+                "http://localhost:5000/signup",
+                {
+                    ...formData,
+                },
+                { withCredentials: true }
+            );
+            const { success, message } = data;
+            if (success) {
+                handleSuccess(message);
+                setTimeout(() => {
+                    navigate("/");
+                }, 1000);
+            } else {
+                handleError(message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        setFormData({
+            ...formData,
+            email: "",
+            username: "",
+            password: "",
+            role: "freelancer",
+        });
+
     };
 
     return (
@@ -106,6 +145,7 @@ export default function Register() {
                     </Link>
                 </p>
             </div>
+            <ToastContainer />
         </div>
     );
 }

@@ -1,6 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Pencil, Trash2, Plus } from "lucide-react";
+import { useCookies } from "react-cookie";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 const ClientDashboard = () => {
     const myProjects = [
@@ -67,6 +70,7 @@ const ClientDashboard = () => {
                     ))
                 )}
             </div>
+            <ToastContainer />
         </div>
     );
 };

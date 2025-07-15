@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { BadgeCheck, XCircle, Search, Send } from "lucide-react";
 
+
 const FreelancerDashboard = () => {
     const bidsPlaced = [
         {

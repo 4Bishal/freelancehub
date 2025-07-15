@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { useAuth } from "../components/AuthContext";  // import your context hook
+import useRedirectedToast from "../hooks/useRedirectedToast";
 
 export default function Login() {
+    const navigate = useNavigate();
+    const { loginUser } = useAuth();  // get loginUser from context
+
+    useRedirectedToast();
+
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -15,11 +24,40 @@ export default function Login() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleError = (err) =>
+        toast.error(err, {
+            position: "bottom-left",
+        });
+    const handleSuccess = (msg) =>
+        toast.success(msg, {
+            position: "bottom-left",
+        });
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Logging in with:", formData);
-        // Login logic here
+        try {
+            const { data } = await axios.post(
+                "http://localhost:5000/login",
+                { ...formData },
+                { withCredentials: true }
+            );
+            const { success, message, role } = data;
+
+            if (success) {
+                handleSuccess(message);
+                loginUser(role);
+                setTimeout(() => {
+                    navigate("/", { state: { toastMessage: "Welcome to FreelancerHub!" } });
+                }, 500);
+            } else {
+                handleError(message);
+            }
+        } catch (error) {
+            handleError("Login failed. Please try again.");
+        }
+        setFormData({ email: "", password: "" });
     };
+
 
     return (
         <div
@@ -79,6 +117,7 @@ export default function Login() {
                     </Link>
                 </p>
             </div>
+            <ToastContainer />
         </div>
     );
 }
