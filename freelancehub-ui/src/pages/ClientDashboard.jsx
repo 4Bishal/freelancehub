@@ -23,7 +23,7 @@ const ClientDashboard = () => {
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold text-gray-800">My Projects</h1>
                 <Link
-                    to="/post-project"
+                    to="/postproject"
                     className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2 rounded-md font-medium shadow hover:bg-indigo-700 transition"
                 >
                     <Plus className="w-4 h-4" /> Post New Project
