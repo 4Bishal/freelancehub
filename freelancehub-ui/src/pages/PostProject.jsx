@@ -22,7 +22,7 @@ const PostProject = () => {
     };
 
     return (
-        <div className="overflow-auto px-4 py-10 bg-gray-50">
+        <div className="overflow-auto px-4 py-10 ">
             <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
                 <h2 className="text-2xl font-bold mb-6 text-indigo-700">Post a New Project</h2>
                 <form onSubmit={handleSubmit} className="space-y-6">

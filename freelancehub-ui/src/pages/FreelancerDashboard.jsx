@@ -46,7 +46,7 @@ const FreelancerDashboard = () => {
     };
 
     return (
-        <div className="px-6 py-10 bg-gray-50 overflow-auto">
+        <div className="px-6 py-10 overflow-auto">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold text-gray-800">My Bids</h1>
                 <Link

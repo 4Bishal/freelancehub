@@ -25,7 +25,7 @@ const WhyFreelancerHub = () => {
         },
     ];
     return (
-        <section className="bg-white py-20 px-4 md:px-12 " id="why-freelancerhub">
+        <section className=" py-20 px-4 md:px-12 " id="why-freelancerhub">
             <div className="text-center mb-14">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                     Why Choose <span className="text-indigo-600">Freelancer<span className="text-blue-600">Hub</span><span className="text-gray-900">?</span></span>

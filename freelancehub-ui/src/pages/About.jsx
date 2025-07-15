@@ -23,8 +23,8 @@ export default function About() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[80vh] px-6 py-16 bg-gray-50">
-            <div className="max-w-4xl bg-white p-10 rounded-2xl shadow-2xl border border-gray-300 w-full">
+        <div className="flex flex-col items-center justify-center min-h-[80vh] px-6 py-16 ">
+            <div className="max-w-4xl  p-10 rounded-2xl shadow-2xl  w-full">
                 <h1 className="text-4xl font-bold mb-6 text-indigo-600 text-center">
                     About FreelancerHub
                 </h1>

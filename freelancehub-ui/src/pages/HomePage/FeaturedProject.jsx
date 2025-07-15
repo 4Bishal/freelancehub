@@ -27,7 +27,7 @@ const FeaturedProject = () => {
         },
     ];
     return (
-        <section className="py-20 px-4 md:px-12 bg-white-50 " id="featured-project">
+        <section className="py-20 px-4 md:px-12" id="featured-project">
             <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
                     Featured Projects

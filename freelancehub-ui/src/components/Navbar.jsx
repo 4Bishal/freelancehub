@@ -62,7 +62,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="bg-white shadow-md px-64 py-3 flex justify-between items-center h-20">
+        <nav className="  px-64 py-3 flex justify-between items-center h-20">
             {/* Logo */}
             <div>
                 <Link to="/" className="text-3xl font-bold text-indigo-600">

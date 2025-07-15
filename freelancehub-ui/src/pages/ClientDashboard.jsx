@@ -22,7 +22,7 @@ const ClientDashboard = () => {
     ];
 
     return (
-        <div className="flex-grow px-6 py-6 bg-gray-50 overflow-auto box-border">
+        <div className="flex-grow px-6 py-6  overflow-auto box-border">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold text-gray-800">My Projects</h1>
                 <Link

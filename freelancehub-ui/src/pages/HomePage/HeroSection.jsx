@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from "react-router-dom";
 const HeroSection = () => {
     return (
-        <section className="bg-white-100 py-20 text-center px-4 md:px-0 " id="hero-section">
+        <section className=" py-20 text-center px-4 md:px-0 " id="hero-section">
             <h1 className="text-4xl md:text-5xl font-bold text-blue-800 mb-4">
                 Find the Right Projects or the Perfect Freelancer
             </h1>

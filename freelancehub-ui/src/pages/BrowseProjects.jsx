@@ -168,11 +168,11 @@ const BrowseProjects = () => {
     }, [budgetRange, selectedCategory, deadlineFilter, sortBy]);
 
     return (
-        <div className="overflow-auto bg-gray-50 p-6">
+        <div className="overflow-auto  p-6">
             <h1 className="text-3xl font-bold mb-8 text-gray-800">Browse Projects</h1>
 
             {/* Filters */}
-            <div className="bg-white p-4 rounded-lg shadow mb-8 flex flex-col md:flex-row md:items-center md:space-x-6 space-y-4 md:space-y-0">
+            <div className=" p-4 rounded-lg shadow mb-8 flex flex-col md:flex-row md:items-center md:space-x-6 space-y-4 md:space-y-0">
 
                 {/* Budget Filter */}
                 <div className="flex items-center space-x-2">
@@ -246,7 +246,7 @@ const BrowseProjects = () => {
                     filteredProjects.map(({ id, title, description, budget, category, deadline }) => (
                         <div
                             key={id}
-                            className="bg-white p-6 rounded-lg shadow hover:shadow-md transition cursor-pointer"
+                            className=" p-6 rounded-lg shadow hover:shadow-md transition cursor-pointer"
                         >
                             <h3 className="text-2xl font-bold text-gray-800 mb-2">{title}</h3>
                             <p className="text-gray-600 mb-2 line-clamp-3">{description}</p>

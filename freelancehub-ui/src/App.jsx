@@ -16,71 +16,86 @@ import BrowseProjects from "./pages/BrowseProjects";
 
 function App() {
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Navbar stays at top */}
-      <Navbar />
+    <>
+      {/* Global Background Effect */}
+      <div
+        className="fixed inset-0 bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50 pointer-events-none -z-10"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"></div>
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
+          <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" style={{ animationDelay: '4s' }}></div>
+        </div>
+      </div>
 
-      {/* Main content grows to fill available space */}
-      <main className="flex-1 overflow-auto">
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/*" element={<NotFound />} />
+      {/* Main App Content */}
+      <div className="flex flex-col min-h-screen relative">
+        {/* Navbar stays at top */}
+        <Navbar />
 
-          {/* Protected Routes */}
+        {/* Main content grows to fill available space */}
+        <main className="flex-1 overflow-auto">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/*" element={<NotFound />} />
 
-          {/* Freelancer only */}
-          <Route
-            path="/freelancerdashboard"
-            element={
-              <ProtectedRoute allowedRoles={["freelancer"]}>
-                <FreelancerDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/projectdetail"
-            element={
-              <ProtectedRoute allowedRoles={["freelancer"]}>
-                <ProjectDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/browseprojects"
-            element={
-              <ProtectedRoute allowedRoles={["freelancer"]}>
-                <BrowseProjects />
-              </ProtectedRoute>
-            }
-          />
+            {/* Protected Routes */}
 
-          {/* Client only */}
-          <Route
-            path="/clientdashboard"
-            element={
-              <ProtectedRoute allowedRoles={["client"]}>
-                <ClientDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/postproject"
-            element={
-              <ProtectedRoute allowedRoles={["client"]}>
-                <PostProject />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </main>
+            {/* Freelancer only */}
+            <Route
+              path="/freelancerdashboard"
+              element={
+                <ProtectedRoute allowedRoles={["freelancer"]}>
+                  <FreelancerDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/projectdetail"
+              element={
+                <ProtectedRoute allowedRoles={["freelancer"]}>
+                  <ProjectDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/browseprojects"
+              element={
+                <ProtectedRoute allowedRoles={["freelancer"]}>
+                  <BrowseProjects />
+                </ProtectedRoute>
+              }
+            />
 
-      {/* Footer sticks to bottom if content is short */}
-      <Footer />
-    </div>
+            {/* Client only */}
+            <Route
+              path="/clientdashboard"
+              element={
+                <ProtectedRoute allowedRoles={["client"]}>
+                  <ClientDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/postproject"
+              element={
+                <ProtectedRoute allowedRoles={["client"]}>
+                  <PostProject />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </main>
+
+        {/* Footer sticks to bottom if content is short */}
+        <Footer />
+      </div>
+    </>
   );
 }
 
