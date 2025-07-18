@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 
 const NotFound = () => {
     return (
-        <div className=" flex flex-col lg:flex-row items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-indigo-50 px-6 py-16 space-y-12 lg:space-y-0 lg:space-x-24">
+        <div className=" flex flex-col lg:flex-row items-center justify-center  from-indigo-50 via-white to-indigo-50 px-6 py-16 space-y-12 lg:space-y-0 lg:space-x-24">
             {/* Left: Illustration */}
             <div className="max-w-md w-full">
                 <img
-                    src="/PagenotFound.svg"
+                    src="/PagenotFoundIcon.svg"
                     alt="Page not found illustration"
                     className="w-full h-auto"
                 />
