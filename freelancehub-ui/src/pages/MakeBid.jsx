@@ -82,15 +82,15 @@ export default function MakeBid() {
     };
 
     return (
-        <div className="min-h-[80vh] px-6 py-16 bg-gray-50 flex flex-col items-center justify-center space-y-12">
+        <div className="min-h-[80vh] px-4 sm:px-6 lg:px-12 py-12 bg-gray-50 flex flex-col lg:flex-row lg:items-start lg:justify-center lg:space-x-12 space-y-12 lg:space-y-0">
 
             {/* Project Info Section */}
-            <section className="max-w-lg w-full bg-white rounded-lg shadow-lg p-8">
+            <section className="w-full max-w-lg bg-white rounded-lg shadow-lg p-6 sm:p-8 lg:flex-1">
                 <h2 className="text-xl font-semibold text-indigo-700 border-b border-indigo-300 pb-2 mb-6">
                     Project You Are Bidding On
                 </h2>
 
-                <h3 className="text-3xl font-extrabold text-gray-900 mb-4">{projectData.title}</h3>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-4">{projectData.title}</h3>
                 <p className="text-gray-700 mb-8 leading-relaxed">{projectData.description}</p>
 
                 <div className="space-y-5 text-gray-600 text-sm font-medium">
@@ -98,7 +98,7 @@ export default function MakeBid() {
                         {/* Owner Icon */}
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 mr-2 text-indigo-500"
+                            className="h-5 w-5 mr-2 text-indigo-500 flex-shrink-0"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -111,7 +111,7 @@ export default function MakeBid() {
                             />
                         </svg>
 
-                        <strong className="mr-1">Posted bY:</strong> {postedBy}
+                        <strong className="mr-1">Posted by:</strong> {postedBy}
                     </div>
                     <div className="flex items-center gap-3">
                         {/* Category Icon */}
@@ -145,7 +145,7 @@ export default function MakeBid() {
                             />
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v3m0 10v3m-7-6h14" />
                         </svg>
-                        <span><strong>Budget:</strong> ${(projectData.budget).toLocaleString()}</span>
+                        <span><strong>Budget:</strong> ${projectData.budget.toLocaleString()}</span>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -166,12 +166,12 @@ export default function MakeBid() {
             </section>
 
             {/* Bid Form Section */}
-            <section className="max-w-lg w-full bg-white rounded-lg shadow-lg p-8">
+            <section className="w-full max-w-lg bg-white rounded-lg shadow-lg p-6 sm:p-8 lg:flex-1">
                 <h2 className="text-xl font-semibold text-indigo-700 border-b border-indigo-300 pb-2 mb-6">
                     Your Bid
                 </h2>
 
-                <form onSubmit={handleBidSubmit} className="space-y-8">
+                <form onSubmit={handleBidSubmit} className="space-y-6">
                     <input
                         type="number"
                         name="amount"
@@ -200,7 +200,9 @@ export default function MakeBid() {
                     </button>
                 </form>
             </section>
+
             <ToastContainer />
         </div>
+
     );
 }

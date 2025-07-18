@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -84,9 +85,9 @@ export default function EditProject() {
     };
 
     return (
-        <div className="max-w-xl mx-auto p-4">
-            <h2 className="text-3xl font-semibold mb-4">Edit Project</h2>
-            <p className="text-sm font-semibold mb-4">
+        <div className="max-w-xl mx-auto p-4 sm:p-6">
+            <h2 className="text-3xl font-semibold mb-4 text-center sm:text-left">Edit Project</h2>
+            <p className="text-sm font-semibold mb-6 text-center sm:text-left">
                 Posted By : <i>@{postedBy}</i>
             </p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -95,7 +96,7 @@ export default function EditProject() {
                     name="title"
                     value={projectData.title}
                     onChange={handleChange}
-                    className="border p-2"
+                    className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="Title"
                     required
                 />
@@ -103,7 +104,7 @@ export default function EditProject() {
                     name="description"
                     value={projectData.description}
                     onChange={handleChange}
-                    className="border p-2"
+                    className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full resize-y min-h-[100px]"
                     placeholder="Description"
                     required
                 />
@@ -112,16 +113,17 @@ export default function EditProject() {
                     name="budget"
                     value={projectData.budget}
                     onChange={handleChange}
-                    className="border p-2"
+                    className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="Budget"
                     required
+                    min="0"
                 />
                 <input
                     type="text"
                     name="category"
                     value={projectData.category}
                     onChange={handleChange}
-                    className="border p-2"
+                    className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="Category"
                     required
                 />
@@ -130,14 +132,18 @@ export default function EditProject() {
                     name="deadline"
                     value={projectData.deadline}
                     onChange={handleChange}
-                    className="border p-2"
+                    className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     required
                     min={minDate} // restrict past dates
                 />
-                <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">
+                <button
+                    type="submit"
+                    className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full sm:w-auto"
+                >
                     Update Project
                 </button>
             </form>
         </div>
+
     );
 }

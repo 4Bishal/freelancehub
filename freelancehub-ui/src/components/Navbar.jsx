@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
-import { ChevronDown, User, LogOut, LayoutDashboard } from "lucide-react";
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import { ChevronDown, User, LogOut, LayoutDashboard, Menu, X } from "lucide-react";
 import { useAuth } from "../components/AuthContext";
 import { toast } from "react-toastify";
 
 export default function Navbar() {
+    const navigate = useNavigate();
     const [isDropdownOpen, setDropdownOpen] = useState(false);
+    const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
     const location = useLocation();
     const { isAuthenticated, role, username, logout } = useAuth();
 
-    // Close dropdown on route change
     useEffect(() => {
         setDropdownOpen(false);
+        setMobileMenuOpen(false); // close menu on route change
     }, [location]);
 
-    // Role based avatar images
     const avatarSrc =
         role === "client"
             ? "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
@@ -54,7 +55,7 @@ export default function Navbar() {
         const success = await logout();
         if (success) {
             toast.success("Logout successful");
-            // Optionally navigate or reload page here
+            navigate("/");  // Navigate to home after logout success
         } else {
             toast.error("Logout failed, please try again");
         }
@@ -62,7 +63,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="  px-64 py-3 flex justify-between items-center h-20">
+        <nav className="px-4 md:px-16 lg:px-32 py-3 flex justify-between items-center h-20 relative bg-white shadow sticky top-0 z-50">
             {/* Logo */}
             <div>
                 <Link to="/" className="text-3xl font-bold text-indigo-600">
@@ -70,7 +71,7 @@ export default function Navbar() {
                 </Link>
             </div>
 
-            {/* Navigation Items */}
+            {/* Desktop Nav Items */}
             <div className="hidden md:flex space-x-6 text-gray-700">
                 {allNavItems.map(({ name, to }, idx) => (
                     <Link
@@ -84,11 +85,20 @@ export default function Navbar() {
                 ))}
             </div>
 
-            {/* User Avatar + Dropdown + Role Text */}
+            {/* Mobile Hamburger Button */}
+            <div className="md:hidden">
+                <button
+                    onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+                    className="text-gray-600 focus:outline-none"
+                >
+                    {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+            </div>
+
+            {/* User Avatar and Dropdown */}
             {isAuthenticated && (
-                <div className="relative flex items-center space-x-3">
-                    {/* Role display text */}
-                    <span className="text-gray-700 font-semibold hidden md:inline">
+                <div className="hidden md:flex relative items-center space-x-3">
+                    <span className="text-gray-700 font-semibold hidden lg:inline">
                         Role: {roleDisplay}
                     </span>
 
@@ -106,7 +116,6 @@ export default function Navbar() {
                         <ChevronDown className="w-4 h-4 text-gray-500" />
                     </button>
 
-                    {/* Dropdown */}
                     {isDropdownOpen && (
                         <div className="absolute right-0 top-full mt-2 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
                             <Link
@@ -117,7 +126,6 @@ export default function Navbar() {
                                 <LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard
                             </Link>
 
-                            {/* Role-specific option */}
                             {role === "client" && (
                                 <Link
                                     to="/postproject"
@@ -137,6 +145,55 @@ export default function Navbar() {
                             </button>
                         </div>
                     )}
+                </div>
+            )}
+
+            {/* Mobile Menu Panel */}
+            {isMobileMenuOpen && (
+                <div className="absolute top-20 left-0 w-full bg-white shadow-lg border-t z-40 md:hidden">
+                    <div className="flex flex-col px-6 py-4 space-y-3 text-gray-800">
+                        {allNavItems.map(({ name, to }, idx) => (
+                            <Link
+                                key={idx}
+                                to={to}
+                                className="text-base font-medium"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                {name}
+                            </Link>
+                        ))}
+
+                        {isAuthenticated && (
+                            <>
+                                <hr />
+                                <span className="text-sm text-gray-600 mb-2">
+                                    Role: {roleDisplay}
+                                </span>
+                                <Link
+                                    to={getDashboardLink()}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="flex items-center text-sm text-gray-700"
+                                >
+                                    <LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard
+                                </Link>
+                                {role === "client" && (
+                                    <Link
+                                        to="/postproject"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="flex items-center text-sm text-gray-700"
+                                    >
+                                        <User className="w-4 h-4 mr-2" /> Post Project
+                                    </Link>
+                                )}
+                                <button
+                                    onClick={handleLogout}
+                                    className="flex items-center text-sm text-red-600 mt-2"
+                                >
+                                    <LogOut className="w-4 h-4 mr-2" /> Logout
+                                </button>
+                            </>
+                        )}
+                    </div>
                 </div>
             )}
         </nav>

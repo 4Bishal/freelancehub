@@ -61,12 +61,12 @@ export default function Login() {
 
     return (
         <div
-            className="flex flex-col items-center justify-center h-full px-4"
-            style={{ marginTop: "10rem" }}
+            className="flex flex-col items-center justify-center  px-4 py-12 sm:py-20"
+            style={{ marginTop: "6rem", marginBottom: "0rem" }}
         >
             <div
                 className="bg-white p-8 rounded-2xl max-w-md w-full
-          max-h-[calc(100vh-8rem)] overflow-auto shadow-2xl border border-gray-300"
+      max-h-[calc(100vh-6rem)] overflow-auto shadow-2xl border border-gray-300"
             >
                 <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
                     Login to Your Account
@@ -119,5 +119,6 @@ export default function Login() {
             </div>
             <ToastContainer />
         </div>
+
     );
 }

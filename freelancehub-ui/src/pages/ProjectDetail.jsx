@@ -38,9 +38,11 @@ const ProjectDetail = () => {
     }, [id]);
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-50 px-4">
-            <section className="max-w-2xl w-full bg-white rounded-xl shadow-md p-8">
-                <h2 className="text-3xl font-semibold text-indigo-700 border-b border-indigo-300 pb-2 mb-6 text-center">
+        <div className="flex justify-center items-center bg-gray-50 px-4 py-8" style={{
+            marginTop: "6rem", marginBottom: "0rem"
+        }}>
+            <section className="w-full max-w-2xl bg-white rounded-xl shadow-md p-6 sm:p-8">
+                <h2 className="text-3xl font-semibold text-indigo-700 border-b border-indigo-300 pb-2 mb-6 text-center sm:text-left">
                     Project Details
                 </h2>
 
@@ -49,10 +51,10 @@ const ProjectDetail = () => {
 
                 <div className="space-y-4 text-gray-600 text-sm">
                     {/* Posted By */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-indigo-500"
+                            className="h-5 w-5 text-indigo-500 flex-shrink-0"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -64,14 +66,16 @@ const ProjectDetail = () => {
                                 d="M5.121 17.804A9 9 0 0112 15a9 9 0 016.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                             />
                         </svg>
-                        <span><strong>Posted by:</strong> {postedBy}</span>
+                        <span>
+                            <strong>Posted by:</strong> {postedBy}
+                        </span>
                     </div>
 
                     {/* Category */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-indigo-600"
+                            className="h-5 w-5 text-indigo-600 flex-shrink-0"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -79,14 +83,16 @@ const ProjectDetail = () => {
                         >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 7h18M3 12h18M3 17h18" />
                         </svg>
-                        <span><strong>Category:</strong> {projectData.category}</span>
+                        <span>
+                            <strong>Category:</strong> {projectData.category}
+                        </span>
                     </div>
 
                     {/* Budget */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-green-600"
+                            className="h-5 w-5 text-green-600 flex-shrink-0"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -99,35 +105,45 @@ const ProjectDetail = () => {
                             />
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v3m0 10v3m-7-6h14" />
                         </svg>
-                        <span><strong>Budget:</strong> ${parseInt(projectData.budget).toLocaleString()}</span>
+                        <span>
+                            <strong>Budget:</strong> ${parseInt(projectData.budget).toLocaleString()}
+                        </span>
                     </div>
 
                     {/* Deadline */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-red-600"
+                            className="h-5 w-5 text-red-600 flex-shrink-0"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
                             strokeWidth={2}
                         >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2v-7H3v7a2 2 0 002 2z" />
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2v-7H3v7a2 2 0 002 2z"
+                            />
                         </svg>
-                        <span><strong>Deadline:</strong> {projectData.deadline}</span>
+                        <span>
+                            <strong>Deadline:</strong> {projectData.deadline}
+                        </span>
                     </div>
                 </div>
-                {/*  Go to Dashboard Button */}
-                <div className="flex justify-end">
+
+                {/* Go to Dashboard Button */}
+                <div className="flex justify-center sm:justify-end mt-8">
                     <button
                         onClick={() => navigate("/freelancerdashboard")}
-                        className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+                        className="px-6 py-3 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition w-full sm:w-auto"
                     >
                         Go to Dashboard
                     </button>
                 </div>
             </section>
         </div>
+
     );
 };
 

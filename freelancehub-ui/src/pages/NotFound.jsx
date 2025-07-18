@@ -1,20 +1,32 @@
 import { Link } from "react-router-dom";
-import { Ban } from "lucide-react";
 
 const NotFound = () => {
     return (
-        <div className="flex flex-col items-center justify-center flex-grow px-4 text-gray-800">
-            <Ban className="w-20 h-20 text-red-500 mb-6 animate-pulse" />
-            <h1 className="text-4xl font-bold mb-2">404 - Page Not Found</h1>
-            <p className="text-center max-w-md mb-6 text-lg">
-                Sorry, the page you’re looking for doesn’t exist or has been moved.
-            </p>
-            <Link
-                to="/"
-                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition"
-            >
-                Go Back Home
-            </Link>
+        <div className=" flex flex-col lg:flex-row items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-indigo-50 px-6 py-16 space-y-12 lg:space-y-0 lg:space-x-24">
+            {/* Left: Illustration */}
+            <div className="max-w-md w-full">
+                <img
+                    src="/PagenotFound.svg"
+                    alt="Page not found illustration"
+                    className="w-full h-auto"
+                />
+            </div>
+
+            {/* Right: Text & Button */}
+            <div className="max-w-lg text-center lg:text-left">
+                <h1 className="text-5xl font-extrabold text-indigo-700 mb-6">
+                    Oops! Page Not Found
+                </h1>
+                <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+                    The page you’re looking for doesn’t exist, has been removed, or is temporarily unavailable.
+                </p>
+                <Link
+                    to="/"
+                    className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-semibold px-8 py-3 rounded-md shadow-lg transition"
+                >
+                    Go Back Home
+                </Link>
+            </div>
         </div>
     );
 };

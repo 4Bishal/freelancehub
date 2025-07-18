@@ -55,11 +55,11 @@ const ClientDashboard = () => {
     const now = new Date();
 
     return (
-        <div className="flex-grow px-6 py-6 overflow-auto box-border">
-            <div className="flex justify-between items-center mb-8">
+        <div className="flex-grow px-4 sm:px-6 md:px-6 py-6 overflow-auto box-border">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 md:gap-0">
                 <h1 className="text-3xl font-bold text-gray-800">
                     My Projects(
-                    <span className="text-sm font-semibold text-gray-800">
+                    <span className="text-sm font-semibold text-gray-800 ml-2">
                         Project Count = <i>{myProjects.length}</i>
                     </span>
                     )
@@ -67,7 +67,7 @@ const ClientDashboard = () => {
 
                 <Link
                     to="/postproject"
-                    className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2 rounded-md font-medium shadow hover:bg-indigo-700 transition"
+                    className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2 rounded-md font-medium shadow hover:bg-indigo-700 transition whitespace-nowrap"
                 >
                     <Plus className="w-4 h-4" /> Post New Project
                 </Link>
@@ -83,60 +83,59 @@ const ClientDashboard = () => {
                         return (
                             <div
                                 key={project.id}
-                                className={`bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex flex-col md:flex-row md:items-start md:justify-between gap-4
-                 `}
+                                className={`bg-white p-5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex flex-col md:flex-row md:items-start md:justify-between gap-6`}
                             >
                                 {/* LEFT: Project Content */}
-                                <div className="flex-1">
-                                    <h2 className="text-xl font-bold text-gray-800 mb-2">{project.title}</h2>
+                                <div className="flex-1 min-w-0">
+                                    <h2 className="text-xl font-bold text-gray-800 mb-2 truncate">{project.title}</h2>
 
                                     {isExpired && (
-                                        <p className="text-red-600 font-semibold mb-2">
-                                            ⚠️ Deadline Passed
-                                        </p>
+                                        <p className="text-red-600 font-semibold mb-2">⚠️ Deadline Passed</p>
                                     )}
 
-                                    <p className="text-gray-600 text-sm mb-3">{project.description}</p>
+                                    <p className="text-gray-600 text-sm mb-3 line-clamp-4">{project.description}</p>
 
                                     <div className="flex flex-wrap gap-3 text-sm mb-3">
-                                        <span className="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-medium">
+                                        <span className="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-medium whitespace-nowrap">
                                             💰 Budget: {project.budget}
                                         </span>
-                                        <span className="inline-block bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">
+                                        <span className="inline-block bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium whitespace-nowrap">
                                             📂 Category: {project.category}
                                         </span>
                                     </div>
 
                                     <div className="flex flex-wrap gap-4 text-sm">
-                                        <span className="text-gray-700 font-semibold flex items-center gap-1">
+                                        <span className="text-gray-700 font-semibold flex items-center gap-1 whitespace-nowrap">
                                             🗓{" "}
-                                            <span className={`font-medium ${isExpired ? "text-red-600" : "text-blue-600"}`}>
+                                            <span
+                                                className={`font-medium ${isExpired ? "text-red-600" : "text-blue-600"}`}
+                                            >
                                                 {project.deadline}
                                             </span>
                                         </span>
-                                        <span className="text-gray-700 font-semibold flex items-center gap-1">
+                                        <span className="text-gray-700 font-semibold flex items-center gap-1 whitespace-nowrap">
                                             👤 <span className="text-green-600 font-medium">{project.postedby}</span>
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* RIGHT: Action Buttons */}
-                                <div className="flex-shrink-0 flex flex-row md:flex-col gap-3">
+                                <div className="flex-shrink-0 flex flex-col sm:flex-row md:flex-col gap-3 justify-start">
                                     <Link
                                         to={`/editproject/${project.id}`}
-                                        className="flex items-center gap-1 text-sm text-blue-600 font-medium hover:underline"
+                                        className="flex items-center gap-1 text-sm text-blue-600 font-medium hover:underline whitespace-nowrap px-3 py-1"
                                     >
                                         <Pencil className="w-4 h-4" /> Edit
                                     </Link>
                                     <button
                                         onClick={() => handleDelete(project.id)}
-                                        className="flex items-center gap-1 text-sm text-red-600 font-medium hover:underline"
+                                        className="flex items-center gap-1 text-sm text-red-600 font-medium hover:underline whitespace-nowrap px-3 py-1"
                                     >
                                         <Trash2 className="w-4 h-4" /> Delete
                                     </button>
                                     <Link
                                         to={`/projectbids/${project.id}`}
-                                        className="flex items-center gap-1 text-sm text-green-600 font-medium hover:underline"
+                                        className="flex items-center gap-1 text-sm text-green-600 font-medium hover:underline whitespace-nowrap px-3 py-1"
                                     >
                                         🧾 Check Bids
                                     </Link>
@@ -148,6 +147,7 @@ const ClientDashboard = () => {
             </div>
             <ToastContainer />
         </div>
+
     );
 };
 

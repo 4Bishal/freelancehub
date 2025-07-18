@@ -4,6 +4,8 @@ import { Link } from "react-router";
 
 const BrowseProjects = () => {
     const [allProjects, setAllProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [fetchError, setFetchError] = useState(null);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -15,11 +17,15 @@ const BrowseProjects = () => {
                     ...project,
                     deadline: new Date(project.deadline),
                     postedby: project.postedby?.username || "Unknown",
+                    category: project.category || "Uncategorized",
                     id: project._id,
                 }));
                 setAllProjects(formatted);
+                setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch projects:", error);
+                setFetchError("Failed to load projects. Please try again later.");
+                setLoading(false);
             }
         };
 
@@ -32,7 +38,7 @@ const BrowseProjects = () => {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [deadlineFilter, setDeadlineFilter] = useState("");
     const [sortBy, setSortBy] = useState("budgetAsc");
-    const [expirationFilter, setExpirationFilter] = useState("active"); // new filter: active by default
+    const [expirationFilter, setExpirationFilter] = useState("active"); // active by default
 
     const handleBudgetChange = (e, index) => {
         const newRange = [...budgetRange];
@@ -60,11 +66,9 @@ const BrowseProjects = () => {
         const now = new Date();
         return allProjects
             .filter((p) => {
-                // Expiration filter
                 if (expirationFilter === "active" && p.deadline < now) return false;
                 if (expirationFilter === "expired" && p.deadline >= now) return false;
 
-                // Other filters
                 if (p.budget < budgetRange[0] || p.budget > budgetRange[1]) return false;
                 if (selectedCategory && p.category !== selectedCategory) return false;
                 if (deadlineFilter && p.deadline > new Date(deadlineFilter)) return false;
@@ -87,15 +91,31 @@ const BrowseProjects = () => {
             });
     }, [allProjects, budgetRange, selectedCategory, deadlineFilter, sortBy, expirationFilter]);
 
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <p className="text-gray-700 text-lg">Loading projects...</p>
+            </div>
+        );
+    }
+
+    if (fetchError) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <p className="text-red-600 text-lg">{fetchError}</p>
+            </div>
+        );
+    }
+
     return (
-        <div className="overflow-auto p-6">
-            <h1 className="text-3xl font-bold mb-8 text-gray-800">Browse Projects</h1>
+        <div className="overflow-auto p-4 sm:p-6 lg:p-6">
+            <h1 className="text-3xl font-bold mb-6 text-gray-800">Browse Projects</h1>
 
             {/* Filters */}
-            <div className="p-4 rounded-lg shadow mb-8 flex flex-col md:flex-row md:items-center md:space-x-6 space-y-4 md:space-y-0">
+            <div className="p-4 rounded-lg shadow mb-8 flex flex-col sm:flex-wrap sm:flex-row md:items-center md:space-x-6 space-y-4 sm:space-y-0">
                 {/* Budget Filter */}
-                <div className="flex items-center space-x-2">
-                    <label className="font-medium text-gray-700">Budget ($):</label>
+                <div className="flex items-center space-x-2 flex-shrink-0">
+                    <label className="font-medium text-gray-700 whitespace-nowrap">Budget ($):</label>
                     <input
                         type="number"
                         min="0"
@@ -108,7 +128,7 @@ const BrowseProjects = () => {
                     <input
                         type="number"
                         min="0"
-                        max="10000"
+                        max="10000" // fixed from 1000 to 10000
                         value={budgetRange[1]}
                         onChange={(e) => handleBudgetChange(e, 1)}
                         className="w-20 px-2 py-1 border rounded"
@@ -116,8 +136,8 @@ const BrowseProjects = () => {
                 </div>
 
                 {/* Category Filter */}
-                <div>
-                    <label className="font-medium text-gray-700 mr-2">Category:</label>
+                <div className="flex-shrink-0">
+                    <label className="font-medium text-gray-700 mr-2 whitespace-nowrap">Category:</label>
                     <select
                         value={selectedCategory}
                         onChange={handleCategoryChange}
@@ -133,8 +153,8 @@ const BrowseProjects = () => {
                 </div>
 
                 {/* Deadline Filter */}
-                <div>
-                    <label className="font-medium text-gray-700 mr-2">Deadline before:</label>
+                <div className="flex-shrink-0">
+                    <label className="font-medium text-gray-700 mr-2 whitespace-nowrap">Deadline before:</label>
                     <input
                         type="date"
                         value={deadlineFilter}
@@ -144,8 +164,8 @@ const BrowseProjects = () => {
                 </div>
 
                 {/* Expiration Filter */}
-                <div>
-                    <label className="font-medium text-gray-700 mr-2">Status:</label>
+                <div className="flex-shrink-0">
+                    <label className="font-medium text-gray-700 mr-2 whitespace-nowrap">Status:</label>
                     <select
                         value={expirationFilter}
                         onChange={handleExpirationChange}
@@ -158,8 +178,8 @@ const BrowseProjects = () => {
                 </div>
 
                 {/* Sort By */}
-                <div>
-                    <label className="font-medium text-gray-700 mr-2">Sort by:</label>
+                <div className="flex-shrink-0">
+                    <label className="font-medium text-gray-700 mr-2 whitespace-nowrap">Sort by:</label>
                     <select
                         value={sortBy}
                         onChange={handleSortChange}
@@ -174,7 +194,7 @@ const BrowseProjects = () => {
             </div>
 
             {/* Projects List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {filteredProjects.length === 0 ? (
                     <p className="text-gray-600 col-span-full text-center">No projects match your filters.</p>
                 ) : (
@@ -188,6 +208,7 @@ const BrowseProjects = () => {
                                     }`}
                             >
                                 <h3 className="text-2xl font-bold text-gray-800 mb-4">{title}</h3>
+                                {/* Make sure you have @tailwindcss/line-clamp plugin enabled for this to work */}
                                 <p className="text-gray-600 mb-6 line-clamp-3 flex-grow">{description}</p>
 
                                 <div className="space-y-3 mb-6">
@@ -261,9 +282,12 @@ const BrowseProjects = () => {
                                 {isExpired ? (
                                     <p className="mt-auto text-sm text-red-500 font-semibold text-center">Bidding Closed</p>
                                 ) : (
-                                    <button className="mt-auto w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded transition">
-                                        <Link to={`/makebid/${id}`}>Make your Bid</Link>
-                                    </button>
+                                    <Link
+                                        to={`/makebid/${id}`}
+                                        className="mt-auto block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded text-center transition"
+                                    >
+                                        Make your Bid
+                                    </Link>
                                 )}
                             </div>
                         );

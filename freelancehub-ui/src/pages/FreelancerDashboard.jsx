@@ -47,12 +47,12 @@ const FreelancerDashboard = () => {
     };
 
     return (
-        <div className="px-6 py-10 overflow-auto">
-            <div className="flex justify-between items-center mb-8">
+        <div className="px-6 py-10 overflow-auto max-w-5xl mx-auto">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 md:gap-0">
                 <h1 className="text-3xl font-bold text-gray-800">My Bids</h1>
                 <Link
                     to="/browseprojects"
-                    className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2 rounded-md font-medium shadow hover:bg-indigo-700 transition"
+                    className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2 rounded-md font-medium shadow hover:bg-indigo-700 transition whitespace-nowrap"
                 >
                     <Search className="w-4 h-4" /> Browse Projects
                 </Link>
@@ -60,25 +60,25 @@ const FreelancerDashboard = () => {
 
             <div className="space-y-6">
                 {myBids.length === 0 ? (
-                    <p className="text-gray-600 text-lg">You haven’t placed any bids yet.</p>
+                    <p className="text-gray-600 text-lg text-center md:text-left">You haven’t placed any bids yet.</p>
                 ) : (
                     myBids.map(({ id, amount, status, projectTitle, projId }) => (
                         <div
                             key={id}
                             className="bg-white p-6 rounded-lg shadow flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
                         >
-                            <div>
-                                <h2 className="text-xl font-semibold text-gray-800 mb-1">
+                            <div className="flex flex-col flex-1 min-w-0">
+                                <h2 className="text-xl font-semibold text-gray-800 mb-1 truncate" title={projectTitle}>
                                     {projectTitle}
                                 </h2>
                                 <p className="text-gray-600 text-sm mb-2">
-                                    Your Bid: <span className="text-indigo-600 font-medium">{amount}</span>
+                                    Your Bid: <span className="text-indigo-600 font-medium">${amount}</span>
                                 </p>
                                 {getStatusBadge(status)}
                             </div>
                             <Link
                                 to={`/projectdetail/${projId}`}
-                                className="text-sm text-blue-600 font-medium hover:underline"
+                                className="text-sm text-blue-600 font-medium hover:underline whitespace-nowrap"
                             >
                                 View Project →
                             </Link>
@@ -87,6 +87,7 @@ const FreelancerDashboard = () => {
                 )}
             </div>
         </div>
+
     );
 };
 

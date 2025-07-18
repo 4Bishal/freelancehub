@@ -4,3 +4,19 @@
 *::after {
   box-sizing: border-box;
 }
+
+/* Default styling */
+.custom-toast {
+  font-size: 1rem;
+  padding: 12px 20px;
+}
+
+/* Mobile view override */
+@media (max-width: 640px) {
+  .custom-toast {
+    font-size: 0.8rem;
+    padding: 10px 14px;
+    width: 90vw; /* almost full width on mobile */
+    white-space: normal; /* allow wrapping */
+  }
+}

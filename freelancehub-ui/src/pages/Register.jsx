@@ -63,16 +63,19 @@ export default function Register() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center overflow-auto  px-4 " style={{ marginTop: "10rem" }} >
+        <div
+            className="flex flex-col items-center justify-center  px-4"
+            style={{ marginTop: "6rem", marginBottom: "0rem" }}
+        >
             <div
-                className="bg-white p-8 rounded-2xl  max-w-md w-full
-                   max-h-[calc(100vh-8rem)] overflow-auto shadow-2xl border border-gray-300 "
+                className="bg-white p-8 rounded-2xl max-w-md w-full
+      max-h-[calc(100vh-8rem)] overflow-auto shadow-2xl border border-gray-300"
             >
                 <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
                     Create an Account
                 </h2>
 
-                <form onSubmit={handleSubmit} className="space-y-5 ">
+                <form onSubmit={handleSubmit} className="space-y-5">
                     {/* Email Field */}
                     <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -145,7 +148,9 @@ export default function Register() {
                     </Link>
                 </p>
             </div>
+
             <ToastContainer />
         </div>
+
     );
 }
