@@ -7,12 +7,15 @@ import NotFound from "./pages/NotFound";
 import ClientDashboard from "./pages/ClientDashboard";
 import FreelancerDashboard from "./pages/FreelancerDashboard";
 import PostProject from "./pages/PostProject";
-import ProjectDetail from "./pages/ProjectDetail";
+import EditProject from "./pages/EditProject";
 import Navbar from './components/Navbar';
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import About from "./pages/About";
 import BrowseProjects from "./pages/BrowseProjects";
+import MakeBid from "./pages/MakeBid";
+import ProjectDetail from "./pages/ProjectDetail";
+import ProjectBids from "./pages/ProjectBids";
 
 function App() {
   return (
@@ -56,10 +59,10 @@ function App() {
               }
             />
             <Route
-              path="/projectdetail"
+              path="/makebid/:id"
               element={
                 <ProtectedRoute allowedRoles={["freelancer"]}>
-                  <ProjectDetail />
+                  <MakeBid />
                 </ProtectedRoute>
               }
             />
@@ -68,6 +71,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={["freelancer"]}>
                   <BrowseProjects />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/projectdetail/:id"
+              element={
+                <ProtectedRoute allowedRoles={["freelancer"]}>
+                  <ProjectDetail />
                 </ProtectedRoute>
               }
             />
@@ -82,10 +93,26 @@ function App() {
               }
             />
             <Route
+              path="/editproject/:id"
+              element={
+                <ProtectedRoute allowedRoles={["client"]}>
+                  <EditProject />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/postproject"
               element={
                 <ProtectedRoute allowedRoles={["client"]}>
                   <PostProject />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/projectbids/:id"
+              element={
+                <ProtectedRoute allowedRoles={["client"]}>
+                  <ProjectBids />
                 </ProtectedRoute>
               }
             />

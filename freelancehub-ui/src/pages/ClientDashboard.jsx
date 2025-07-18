@@ -1,30 +1,70 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Pencil, Trash2, Plus } from "lucide-react";
-import { useCookies } from "react-cookie";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import useRedirectedToast from "../hooks/useRedirectedToast";
 
 const ClientDashboard = () => {
-    const myProjects = [
-        {
-            id: 1,
-            title: "Portfolio Website in React",
-            description: "Build a fully responsive portfolio site with animations.",
-            baseBid: "$50",
-        },
-        {
-            id: 2,
-            title: "Social Media UI in Figma",
-            description: "Design a mobile-first social media app interface.",
-            baseBid: "$70",
+    useRedirectedToast();
+    const [myProjects, setMyProjects] = useState([]);
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const res = await axios.get("http://localhost:5000/getprojects", {
+                    withCredentials: true,
+                });
+
+                const formatted = res.data.projects.map((project) => ({
+                    ...project,
+                    deadlineDate: new Date(project.deadline), // Keep date object for comparison
+                    deadline: new Date(project.deadline).toLocaleDateString("en-GB"), // Format DD/MM/YYYY
+                    budget: `${project.budget.toLocaleString()}`,
+                    postedby: project.postedby?.username || "Unknown",
+                    id: project._id,
+                }));
+
+                setMyProjects(formatted);
+            } catch (error) {
+                console.error("Failed to fetch projects:", error);
+            }
+        };
+
+        fetchProjects();
+    }, []);
+
+    const handleDelete = async (id) => {
+        try {
+            const res = await axios.delete(`http://localhost:5000/deleteproject/${id}`, {
+                withCredentials: true,
+            });
+
+            if (res.data.success) {
+                setMyProjects((prev) => prev.filter((project) => project._id !== id));
+                toast.success(res.data.message || "Project deleted successfully!");
+            } else {
+                toast.warn("Project deleted, but response is unexpected.");
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Error deleting project.");
+            console.error(err);
         }
-    ];
+    };
+
+    const now = new Date();
 
     return (
-        <div className="flex-grow px-6 py-6  overflow-auto box-border">
+        <div className="flex-grow px-6 py-6 overflow-auto box-border">
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-800">My Projects</h1>
+                <h1 className="text-3xl font-bold text-gray-800">
+                    My Projects(
+                    <span className="text-sm font-semibold text-gray-800">
+                        Project Count = <i>{myProjects.length}</i>
+                    </span>
+                    )
+                </h1>
+
                 <Link
                     to="/postproject"
                     className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2 rounded-md font-medium shadow hover:bg-indigo-700 transition"
@@ -35,39 +75,75 @@ const ClientDashboard = () => {
 
             <div className="space-y-6">
                 {myProjects.length === 0 ? (
-                    <p className="text-gray-600 text-lg">You haven’t posted any projects yet.</p>
+                    <p className="text-gray-600 text-lg">You haven't posted any projects yet.</p>
                 ) : (
-                    myProjects.map((project) => (
-                        <div
-                            key={project.id}
-                            className="bg-white p-6 rounded-lg shadow flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
-                        >
-                            <div>
-                                <h2 className="text-xl font-semibold text-gray-800 mb-1">
-                                    {project.title}
-                                </h2>
-                                <p className="text-gray-600 text-sm">{project.description}</p>
-                                <span className="text-sm font-medium text-indigo-600 mt-2 inline-block">
-                                    Base Bid: {project.baseBid}
-                                </span>
-                            </div>
+                    myProjects.map((project) => {
+                        const isExpired = project.deadlineDate < now;
 
-                            <div className="flex gap-3">
-                                <Link
-                                    to={`/edit-project/${project.id}`}
-                                    className="flex items-center gap-1 text-sm text-blue-600 font-medium hover:underline"
-                                >
-                                    <Pencil className="w-4 h-4" /> Edit
-                                </Link>
-                                <button
-                                    onClick={() => console.log("Delete", project.id)}
-                                    className="flex items-center gap-1 text-sm text-red-600 font-medium hover:underline"
-                                >
-                                    <Trash2 className="w-4 h-4" /> Delete
-                                </button>
+                        return (
+                            <div
+                                key={project.id}
+                                className={`bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex flex-col md:flex-row md:items-start md:justify-between gap-4
+                 `}
+                            >
+                                {/* LEFT: Project Content */}
+                                <div className="flex-1">
+                                    <h2 className="text-xl font-bold text-gray-800 mb-2">{project.title}</h2>
+
+                                    {isExpired && (
+                                        <p className="text-red-600 font-semibold mb-2">
+                                            ⚠️ Deadline Passed
+                                        </p>
+                                    )}
+
+                                    <p className="text-gray-600 text-sm mb-3">{project.description}</p>
+
+                                    <div className="flex flex-wrap gap-3 text-sm mb-3">
+                                        <span className="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-medium">
+                                            💰 Budget: {project.budget}
+                                        </span>
+                                        <span className="inline-block bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">
+                                            📂 Category: {project.category}
+                                        </span>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-4 text-sm">
+                                        <span className="text-gray-700 font-semibold flex items-center gap-1">
+                                            🗓{" "}
+                                            <span className={`font-medium ${isExpired ? "text-red-600" : "text-blue-600"}`}>
+                                                {project.deadline}
+                                            </span>
+                                        </span>
+                                        <span className="text-gray-700 font-semibold flex items-center gap-1">
+                                            👤 <span className="text-green-600 font-medium">{project.postedby}</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* RIGHT: Action Buttons */}
+                                <div className="flex-shrink-0 flex flex-row md:flex-col gap-3">
+                                    <Link
+                                        to={`/editproject/${project.id}`}
+                                        className="flex items-center gap-1 text-sm text-blue-600 font-medium hover:underline"
+                                    >
+                                        <Pencil className="w-4 h-4" /> Edit
+                                    </Link>
+                                    <button
+                                        onClick={() => handleDelete(project.id)}
+                                        className="flex items-center gap-1 text-sm text-red-600 font-medium hover:underline"
+                                    >
+                                        <Trash2 className="w-4 h-4" /> Delete
+                                    </button>
+                                    <Link
+                                        to={`/projectbids/${project.id}`}
+                                        className="flex items-center gap-1 text-sm text-green-600 font-medium hover:underline"
+                                    >
+                                        🧾 Check Bids
+                                    </Link>
+                                </div>
                             </div>
-                        </div>
-                    ))
+                        );
+                    })
                 )}
             </div>
             <ToastContainer />

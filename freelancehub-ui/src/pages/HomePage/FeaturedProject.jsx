@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const FeaturedProject = () => {
-    // Featured Projects
+    const [showPopup, setShowPopup] = useState(false);
+
     const projects = [
         {
             id: 1,
@@ -26,8 +27,17 @@ const FeaturedProject = () => {
             tag: "Graphic Design",
         },
     ];
+
+    const handleViewClick = () => {
+        setShowPopup(true);
+    };
+
+    const closePopup = () => {
+        setShowPopup(false);
+    };
+
     return (
-        <section className="py-20 px-4 md:px-12" id="featured-project">
+        <section className="py-20 px-4 md:px-12 relative" id="featured-project">
             <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
                     Featured Projects
@@ -54,19 +64,34 @@ const FeaturedProject = () => {
                         </div>
                         <div className="flex items-center justify-between mt-4">
                             <span className="text-indigo-600 font-bold">{baseBid}</span>
-                            <Link
-                                to={`/projects/${id}`}
+                            <button
+                                onClick={handleViewClick}
                                 className="text-sm text-blue-600 font-medium hover:underline"
                             >
                                 View Project →
-                            </Link>
+                            </button>
                         </div>
                     </div>
                 ))}
             </div>
 
+            {showPopup && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-black opacity-30"></div>
+                    <div className="bg-white rounded-xl shadow-lg z-10 p-6 w-80 max-w-full text-center">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-3">Just for demo</h3>
+                        <p className="text-gray-600 mb-4">Just a Demo Stuff!!</p>
+                        <button
+                            onClick={closePopup}
+                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                        >
+                            OK
+                        </button>
+                    </div>
+                </div>
+            )}
         </section>
-    )
-}
+    );
+};
 
-export default FeaturedProject
+export default FeaturedProject;

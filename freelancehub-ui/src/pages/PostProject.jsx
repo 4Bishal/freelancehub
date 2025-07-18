@@ -1,12 +1,21 @@
 import React, { useState } from "react";
-
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router";
 const PostProject = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         title: "",
         description: "",
         budget: "",
         deadline: "",
+        category: "",
     });
+
+
+    // Get today's date in YYYY-MM-DD format for min attribute
+    const today = new Date();
+    const minDate = today.toISOString().split("T")[0];
 
     const handleChange = (e) => {
         setFormData((prev) => ({
@@ -15,10 +24,37 @@ const PostProject = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleError = (err) =>
+        toast.error(err, {
+            position: "bottom-left",
+        });
+    const handleSuccess = (msg) =>
+        toast.success(msg, {
+            position: "bottom-left",
+        });
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Project Posted:", formData);
-        // 👉 Add your API call here
+        try {
+            const { data } = await axios.post("http://localhost:5000/createproject",
+                { ...formData },
+                { withCredentials: true }
+            );
+
+            const { message, success } = data;
+
+            if (success) {
+                handleSuccess(message);
+                setTimeout(() => {
+                    navigate("/clientdashboard", { state: { toastMessage: "New Project Created Successfully" } });
+                }, 500);
+            } else {
+                handleError(message);
+            }
+        } catch (err) {
+            handleError("Posting Project  failed. Please try again.");
+        }
+        setFormData({ title: "", description: "", budget: "", deadline: "", category: "" });
     };
 
     return (
@@ -78,6 +114,23 @@ const PostProject = () => {
                             placeholder="e.g. 100"
                         />
                     </div>
+                    {/* Category */}
+                    <div>
+                        <label htmlFor="category" className="block text-gray-700 font-medium mb-1">
+                            Category
+                        </label>
+                        <input
+                            type="text"
+                            id="category"
+                            name="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                            required
+                            min="0"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="e.g. MERN STACK PROJECT"
+                        />
+                    </div>
 
                     {/* Deadline */}
                     <div>
@@ -86,12 +139,12 @@ const PostProject = () => {
                         </label>
                         <input
                             type="date"
-                            id="deadline"
                             name="deadline"
                             value={formData.deadline}
                             onChange={handleChange}
-                            required
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            required
+                            min={minDate} // restrict past dates
                         />
                     </div>
 

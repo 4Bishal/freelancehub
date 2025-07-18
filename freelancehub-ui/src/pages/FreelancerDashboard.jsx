@@ -1,29 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BadgeCheck, XCircle, Search, Send } from "lucide-react";
+import axios from "axios";
 
 
 const FreelancerDashboard = () => {
-    const bidsPlaced = [
-        {
-            id: 1,
-            projectTitle: "E-commerce Website Design",
-            status: "won", // values: "won", "lost", "pending"
-            bidAmount: "$100",
-        },
-        {
-            id: 2,
-            projectTitle: "Landing Page UI",
-            status: "lost",
-            bidAmount: "$60",
-        },
-        {
-            id: 3,
-            projectTitle: "Logo for Tech Startup",
-            status: "pending",
-            bidAmount: "$30",
-        }
-    ];
+    const [myBids, setMyBids] = useState([]);
+
+    useEffect(() => {
+        const fetchBids = async () => {
+            try {
+                const res = await axios.get('http://localhost:5000/getmybids', { withCredentials: true });
+                const bidsPlaced = res.data.bids.map((bid) => ({
+                    ...bid,
+                    id: bid._id,
+                    projectTitle: bid.project.title,
+                    projId: bid.project._id,
+                }));
+                setMyBids(bidsPlaced);
+            } catch (error) {
+                console.error("Failed to fetch projects:", error);
+            }
+        };
+
+        fetchBids(); // call the async function
+    }, []);
 
     const getStatusBadge = (status) => {
         if (status === "won")
@@ -58,10 +59,10 @@ const FreelancerDashboard = () => {
             </div>
 
             <div className="space-y-6">
-                {bidsPlaced.length === 0 ? (
+                {myBids.length === 0 ? (
                     <p className="text-gray-600 text-lg">You haven’t placed any bids yet.</p>
                 ) : (
-                    bidsPlaced.map(({ id, projectTitle, bidAmount, status }) => (
+                    myBids.map(({ id, amount, status, projectTitle, projId }) => (
                         <div
                             key={id}
                             className="bg-white p-6 rounded-lg shadow flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
@@ -71,12 +72,12 @@ const FreelancerDashboard = () => {
                                     {projectTitle}
                                 </h2>
                                 <p className="text-gray-600 text-sm mb-2">
-                                    Your Bid: <span className="text-indigo-600 font-medium">{bidAmount}</span>
+                                    Your Bid: <span className="text-indigo-600 font-medium">{amount}</span>
                                 </p>
                                 {getStatusBadge(status)}
                             </div>
                             <Link
-                                to={`/projects/${id}`}
+                                to={`/projectdetail/${projId}`}
                                 className="text-sm text-blue-600 font-medium hover:underline"
                             >
                                 View Project →

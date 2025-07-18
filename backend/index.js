@@ -6,7 +6,9 @@ const { UserModel } = require('./models/UserModel');
 const { createSecretToken } = require("./util/SecretToken");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { ProjectModel } = require("./models/ProjectModel");
+const { BidModel } = require("./models/BidModel");
 
 
 dotenv.config();
@@ -115,6 +117,165 @@ app.post("/logout", (req, res) => {
 
     return res.json({ status: true, message: "Logged out successfully" });
 });
+
+
+
+app.post("/createproject", async (req, res) => {
+    const token = req.cookies.token;
+    let userId;
+    if (!token) return res.status(401).json({ message: "No token" });
+
+    jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
+        if (err) return res.status(403).json({ message: "Invalid token" });
+        userId = decoded.id;
+    });
+
+    try {
+        const user = await UserModel.findById(userId);
+        const { title, description, budget, deadline, category } = req.body;
+        const newProject = await ProjectModel.create({ title, description, budget: Number(budget), deadline: new Date(deadline), postedby: userId, category });
+        res.status(200).json({ message: "Post Created", success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({ message: "Error occurred", error: err.message, success: false });
+    }
+
+})
+
+app.get("/browseprojects", async (req, res) => {
+    try {
+        const projects = await ProjectModel.find({}).populate({
+            path: "postedby",
+            select: "-password"
+        });
+        res.json(projects);
+    } catch (err) {
+        res.json({ message: "Something went wrong!", success: false });
+    }
+})
+
+app.get("/getproject/:id", async (req, res) => {
+    const { id } = req.params;
+    console.log(id);
+    const project = await ProjectModel.findById(id).populate({
+        path: 'postedby',
+        select: "-password"
+    });
+    console.log("Project : ");
+    console.log(project);
+    res.json(project);
+})
+
+app.put("/editproject/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedData = req.body;
+        console.log(updatedData);
+        const updatedProject = await ProjectModel.findByIdAndUpdate(id, updatedData, { new: true });
+        res.json({ message: "Updation Success", success: true });
+    } catch (err) {
+        res.status(400).json({ message: "Error occurred", error: err.message, success: false });
+    }
+
+})
+
+app.delete("/deleteproject/:id", async (req, res) => {
+    const { id } = req.params;
+    const deletedProject = await ProjectModel.findByIdAndDelete(id);
+    console.log(deletedProject)
+    res.json({ message: "Project Deleted Successfully", success: true });
+})
+
+app.get("/getprojects", async (req, res) => {
+    const token = req.cookies.token;
+    jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
+        if (err) return res.status(403).json({ message: "Invalid token" });
+        userId = decoded.id;
+    });
+    const projects = await ProjectModel.find({ postedby: userId }).populate({
+        path: 'postedby',
+        select: "-password"
+    });
+    res.status(200).json({ message: "Done", projects: projects, success: true });
+});
+
+
+app.post("/createbid/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const token = req.cookies.token;
+        jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
+            if (err) return res.status(403).json({ message: "Invalid token" });
+            userId = decoded.id;
+        });
+        console.log("USerid=", userId);
+        console.log("projectId=", id);
+        console.log(req.body);
+        const { amount, message } = req.body;
+        const newBid = await BidModel.create({ amount: Number(amount), message, freelancer: userId, project: id });
+        res.json({ message: "Your Bid has been placed", success: true })
+    } catch (error) {
+        res.json({ message: "Failed", success: false, error: error.message })
+    }
+})
+
+app.get("/getmybids", async (req, res) => {
+    const token = req.cookies.token;
+    jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
+        if (err) return res.status(403).json({ message: "Invalid token" });
+        userId = decoded.id;
+    });
+    const bids = await BidModel.find({ freelancer: userId }).populate([{
+        path: 'freelancer',
+        select: "-password"
+    }, { path: "project" }]);
+    console.log(bids);
+    res.status(200).json({ message: "Done", bids: bids, success: true });
+})
+
+app.get("/getprojectbids/:id", async (req, res) => {
+    try {
+        const { id } = req.params; // this is project ID
+        const project = await ProjectModel.findById(id);
+        const bids = await BidModel.find({ project: id }).populate("freelancer", "username");
+        res.status(200).json({ bids, projectTitle: project.title });
+    } catch (err) {
+        console.error("Error fetching bids:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+})
+
+// PUT /updatebidstatus/:id
+app.put('/updatebidstatus/:bidId', async (req, res) => {
+    try {
+        const { status } = req.body;
+        const { bidId } = req.params;
+
+        const updatedBid = await BidModel.findByIdAndUpdate(
+            bidId,
+            { status },
+            { new: true }
+        );
+
+        if (!updatedBid) {
+            return res.status(404).json({ message: "Bid not found" });
+        }
+
+        // If status is won, add bid to project.bids array (if not already)
+        if (status === "won") {
+            await ProjectModel.findByIdAndUpdate(
+                updatedBid.project,
+                { $addToSet: { bids: updatedBid._id } }
+            );
+        }
+
+        res.json(updatedBid);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Failed to update bid status" });
+    }
+});
+
 
 
 app.listen(5000, async () => {
