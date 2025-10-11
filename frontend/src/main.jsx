@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { HashRouter } from "react-router";
 import App from "./App";
-import './output.css';
 import { CookiesProvider } from 'react-cookie';
 import { AuthProvider } from "./components/AuthContext";
 
