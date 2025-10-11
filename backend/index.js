@@ -18,13 +18,22 @@ const PORT = process.env.PORT || 8000
 
 
 // Middlewares
-app.use(
-    cors({
-        origin: ["http://localhost:5173"],
-        methods: ["GET", "POST", "PUT", "DELETE"],
-        credentials: true,
-    })
-);
+app.use(cors({
+    origin: (origin, callback) => {
+        const allowed = [
+            "https://freelancehub-ytg5.onrender.com",
+            "http://localhost:5173",
+        ];
+        if (!origin || allowed.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("CORS not allowed for this origin"));
+        }
+    },
+    credentials: true,
+}));
+
+
 app.use(express.json());
 
 app.use(cookieParser());
