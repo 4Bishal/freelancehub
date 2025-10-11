@@ -21,7 +21,7 @@ app.use(cors({
     origin: (origin, callback) => {
         const allowed = [
             "http://localhost:5173",
-            "https://freelancehub-ytg5.onrender.com"
+            "https://freelancehub-xqif.onrender.com"
         ];
         if (!origin || allowed.includes(origin)) {
             callback(null, true);
