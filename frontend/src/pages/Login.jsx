@@ -3,53 +3,46 @@ import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import { useAuth } from "../components/AuthContext";  // import your context hook
+import { useAuth } from "../components/AuthContext";
 import useRedirectedToast from "../hooks/useRedirectedToast";
 import server from "../environment";
 
 export default function Login() {
     const navigate = useNavigate();
-    // console.log(server);
     const { loginUser } = useAuth();
     useRedirectedToast();
 
     const [formData, setFormData] = useState({ email: "", password: "" });
-    const [loading, setLoading] = useState(false); // <-- loading state
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const handleError = (err) =>
-        toast.error(err, { position: "bottom-left" });
-    const handleSuccess = (msg) =>
-        toast.success(msg, { position: "bottom-left" });
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true); // start loading
+        setLoading(true);
         try {
             const { data } = await axios.post(
                 `${server}/login`,
                 { ...formData },
                 { withCredentials: true }
             );
-            const { success, message, role } = data;
+
+            const { success, message, user } = data;
 
             if (success) {
-                handleSuccess(message);
-                loginUser(role);
-                setTimeout(() => {
-                    navigate("/", { state: { toastMessage: "Welcome to FreelancerHub!" } });
-                }, 500);
+                toast.success(message || "Login successful!", { position: "bottom-left" });
+                loginUser(user); // Pass the full user object (role, username, etc.)
+                navigate("/");   // Navigate immediately
             } else {
-                handleError(message);
+                toast.error(message || "Login failed", { position: "bottom-left" });
             }
         } catch (error) {
-            handleError("Login failed. Please try again.");
+            toast.error(error.response?.data?.message || "Login failed. Please try again.", { position: "bottom-left" });
+        } finally {
+            setLoading(false);
         }
-        setLoading(false); // stop loading
-        setFormData({ email: "", password: "" });
     };
 
     return (
@@ -85,12 +78,7 @@ export default function Login() {
                             className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                         />
                     </div>
-                    {/* Inline message */}
-                    {message && (
-                        <p className={`text-sm mt-2 text-center ${messageType === "error" ? "text-red-600" : "text-green-600"}`}>
-                            {message}
-                        </p>
-                    )}
+
                     {/* Submit Button with spinner */}
                     <button
                         type="submit"
