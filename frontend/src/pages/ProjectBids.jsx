@@ -8,6 +8,7 @@ const ProjectBids = () => {
     const navigate = useNavigate();
     const [bidsData, setBidsData] = useState([]);
     const [projectTitle, setProjectTitle] = useState("");
+    const [loadingBid, setLoadingBid] = useState(null); // store id of bid being updated
 
     useEffect(() => {
         const fetchBids = async () => {
@@ -32,6 +33,7 @@ const ProjectBids = () => {
     }, [id]);
 
     const handleAccept = async (acceptedBidId) => {
+        setLoadingBid(acceptedBidId); // start loading
         try {
             await axios.put(
                 `http://localhost:5000/updatebidstatus/${acceptedBidId}`,
@@ -48,10 +50,13 @@ const ProjectBids = () => {
             );
         } catch (error) {
             console.error("Error updating bid status to won:", error);
+        } finally {
+            setLoadingBid(null); // stop loading
         }
     };
 
     const handleReject = async (bidId) => {
+        setLoadingBid(bidId); // start loading
         try {
             await axios.put(
                 `http://localhost:5000/updatebidstatus/${bidId}`,
@@ -64,6 +69,8 @@ const ProjectBids = () => {
             );
         } catch (error) {
             console.error("Error rejecting bid:", error);
+        } finally {
+            setLoadingBid(null); // stop loading
         }
     };
 
@@ -140,17 +147,68 @@ const ProjectBids = () => {
                                 <div className="flex flex-col sm:flex-row gap-4 mt-6">
                                     <button
                                         onClick={() => handleAccept(id)}
-                                        className="flex-1 sm:flex-none sm:w-36 py-3 px-4 rounded-md font-semibold transition duration-200 text-white shadow-md bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
-                                        aria-label={`Accept bid by ${bidBy}`}
+                                        disabled={loadingBid === id}
+                                        className={`flex-1 sm:flex-none sm:w-36 py-3 px-4 rounded-md font-semibold transition duration-200 text-white shadow-md ${loadingBid === id
+                                                ? "bg-green-500 cursor-not-allowed"
+                                                : "bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                                            }`}
                                     >
-                                        Accept
+                                        {loadingBid === id ? (
+                                            <svg
+                                                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                ></circle>
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                                ></path>
+                                            </svg>
+                                        ) : null}
+                                        {loadingBid === id ? "Processing..." : "Accept"}
                                     </button>
+
                                     <button
                                         onClick={() => handleReject(id)}
-                                        className="flex-1 sm:flex-none sm:w-36 py-3 px-4 rounded-md font-semibold transition duration-200 text-white shadow-md bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
-                                        aria-label={`Reject bid by ${bidBy}`}
+                                        disabled={loadingBid === id}
+                                        className={`flex-1 sm:flex-none sm:w-36 py-3 px-4 rounded-md font-semibold transition duration-200 text-white shadow-md ${loadingBid === id
+                                                ? "bg-red-400 cursor-not-allowed"
+                                                : "bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+                                            }`}
                                     >
-                                        Reject
+                                        {loadingBid === id ? (
+                                            <svg
+                                                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                ></circle>
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                                ></path>
+                                            </svg>
+                                        ) : null}
+                                        {loadingBid === id ? "Processing..." : "Reject"}
                                     </button>
                                 </div>
                             )}

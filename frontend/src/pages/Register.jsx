@@ -13,6 +13,8 @@ export default function Register() {
         role: "freelancer",
     });
 
+    const [loading, setLoading] = useState(false); // <-- Loading state
+
     const handleChange = (e) => {
         setFormData((prev) => ({
             ...prev,
@@ -20,63 +22,52 @@ export default function Register() {
         }));
     };
 
-
     const handleError = (err) =>
-        toast.error(err, {
-            position: "bottom-left",
-        });
+        toast.error(err, { position: "bottom-left" });
     const handleSuccess = (msg) =>
-        toast.success(msg, {
-            position: "bottom-right",
-        });
+        toast.success(msg, { position: "bottom-right" });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true); // <-- Start loading
         try {
             const { data } = await axios.post(
                 "http://localhost:5000/signup",
-                {
-                    ...formData,
-                },
+                { ...formData },
                 { withCredentials: true }
             );
+
             const { success, message } = data;
             if (success) {
                 handleSuccess(message);
-                setTimeout(() => {
-                    navigate("/");
-                }, 1000);
+                setTimeout(() => navigate("/"), 1000);
             } else {
                 handleError(message);
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
+            handleError("Something went wrong!");
         }
+        setLoading(false); // <-- Stop loading
+
+        // Reset form
         setFormData({
-            ...formData,
             email: "",
             username: "",
             password: "",
             role: "freelancer",
         });
-
     };
 
     return (
-        <div
-            className="flex flex-col items-center justify-center  px-4"
-            style={{ marginTop: "6rem", marginBottom: "0rem" }}
-        >
-            <div
-                className="bg-white p-8 rounded-2xl max-w-md w-full
-      max-h-[calc(100vh-8rem)] overflow-auto shadow-2xl border border-gray-300"
-            >
+        <div className="flex flex-col items-center justify-center px-4" style={{ marginTop: "6rem" }}>
+            <div className="bg-white p-8 rounded-2xl max-w-md w-full max-h-[calc(100vh-8rem)] overflow-auto shadow-2xl border border-gray-300">
                 <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
                     Create an Account
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
-                    {/* Email Field */}
+                    {/* Email */}
                     <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
@@ -90,7 +81,7 @@ export default function Register() {
                         />
                     </div>
 
-                    {/* Username Field */}
+                    {/* Username */}
                     <div className="relative">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
@@ -104,7 +95,7 @@ export default function Register() {
                         />
                     </div>
 
-                    {/* Password Field */}
+                    {/* Password */}
                     <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
@@ -118,7 +109,7 @@ export default function Register() {
                         />
                     </div>
 
-                    {/* Role Select */}
+                    {/* Role */}
                     <div className="relative">
                         <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <select
@@ -135,10 +126,43 @@ export default function Register() {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition"
+                        className={`w-full py-2 px-4 rounded-md text-white flex items-center justify-center transition-all duration-300 ${loading
+                            ? "bg-indigo-500 cursor-not-allowed"
+                            : "bg-indigo-600 hover:bg-indigo-700"
+                            }`}
+                        disabled={loading}
                     >
-                        Register
+                        {loading ? (
+                            <>
+                                {/* Modern spinner */}
+                                <svg
+                                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                    ></path>
+                                </svg>
+                                Registering...
+                            </>
+                        ) : (
+                            "Register"
+                        )}
                     </button>
+
+
                 </form>
 
                 <p className="text-sm text-center mt-4 text-gray-600">
@@ -151,6 +175,5 @@ export default function Register() {
 
             <ToastContainer />
         </div>
-
     );
 }

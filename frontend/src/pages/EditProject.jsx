@@ -1,11 +1,10 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
 export default function EditProject() {
-    const { id } = useParams(); // get project id from URL
+    const { id } = useParams();
     const navigate = useNavigate();
     const [postedBy, setPostedBy] = useState("");
     const [projectData, setProjectData] = useState({
@@ -15,24 +14,22 @@ export default function EditProject() {
         budget: "",
         category: "",
     });
+    const [loading, setLoading] = useState(false); // <-- loading state
 
-    // Get today's date in YYYY-MM-DD format for min attribute
     const today = new Date();
     const minDate = today.toISOString().split("T")[0];
 
     useEffect(() => {
-        // Fetch current project data
         const fetchProject = async () => {
             try {
                 const res = await axios.get(`http://localhost:5000/getproject/${id}`, {
                     withCredentials: true,
                 });
                 const data = res.data;
-
                 setProjectData({
                     title: data.title,
                     description: data.description,
-                    deadline: data.deadline.slice(0, 10), // for input[type=date]
+                    deadline: data.deadline.slice(0, 10),
                     budget: data.budget,
                     category: data.category,
                 });
@@ -41,18 +38,13 @@ export default function EditProject() {
                 console.error("Failed to fetch project", err);
             }
         };
-
         fetchProject();
     }, [id]);
 
     const handleError = (err) =>
-        toast.error(err, {
-            position: "bottom-left",
-        });
+        toast.error(err, { position: "bottom-left" });
     const handleSuccess = (msg) =>
-        toast.success(msg, {
-            position: "bottom-left",
-        });
+        toast.success(msg, { position: "bottom-left" });
 
     const handleChange = (e) => {
         setProjectData({ ...projectData, [e.target.name]: e.target.value });
@@ -60,6 +52,7 @@ export default function EditProject() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true); // start loading
         try {
             const { data } = await axios.put(
                 `http://localhost:5000/editproject/${id}`,
@@ -81,7 +74,9 @@ export default function EditProject() {
             }
         } catch (err) {
             console.error("Failed to update project", err);
+            handleError("Update failed. Please try again.");
         }
+        setLoading(false); // stop loading
     };
 
     return (
@@ -134,16 +129,43 @@ export default function EditProject() {
                     onChange={handleChange}
                     className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     required
-                    min={minDate} // restrict past dates
+                    min={minDate}
                 />
                 <button
                     type="submit"
-                    className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full sm:w-auto"
+                    className={`bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full sm:w-auto flex items-center justify-center ${loading ? "cursor-not-allowed bg-blue-500" : ""
+                        }`}
+                    disabled={loading}
                 >
-                    Update Project
+                    {loading ? (
+                        <>
+                            <svg
+                                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                ></circle>
+                                <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                ></path>
+                            </svg>
+                            Updating...
+                        </>
+                    ) : (
+                        "Update Project"
+                    )}
                 </button>
             </form>
         </div>
-
     );
 }
