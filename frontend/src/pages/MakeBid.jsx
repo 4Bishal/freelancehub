@@ -24,12 +24,14 @@ export default function MakeBid() {
         const fetchProject = async () => {
             try {
                 const res = await axios.get(`${server}/getproject/${id}`, { withCredentials: true });
-                const data = res.data;
+                // const data = res.project.data;
+
+                const data = res.data.project;
 
                 setProjectData({
                     title: data.title,
                     description: data.description,
-                    deadline: data.deadline.slice(0, 10),
+                    deadline: data.deadline,
                     budget: data.budget,
                     category: data.category,
                 });
