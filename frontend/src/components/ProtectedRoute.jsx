@@ -5,7 +5,7 @@ import { useAuth } from "../components/AuthContext";
 const ProtectedRoute = ({ allowedRoles, children }) => {
     const { role, isAuthenticated, loading } = useAuth();
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div className="loading-spinner">Loading...</div>;
 
     if (!isAuthenticated) {
         return (
@@ -17,8 +17,9 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
         );
     }
 
-    if (!allowedRoles.includes(role)) {
-        const allowed = allowedRoles.join(" or ");
+    const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
+    if (!roles.includes(role)) {
+        const allowed = roles.join(" or ");
         const properRole = allowed.charAt(0).toUpperCase() + allowed.slice(1);
 
         return (
