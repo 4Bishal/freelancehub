@@ -8,7 +8,7 @@ FreelancerHub is a full-stack web application designed to connect freelancers an
 
 ## 🌐 Live Demo
 
-[Visit FreelancerHub 🚀]https://freelancehub-xqif.onrender.com/
+[Visit FreelancerHub 🚀](https://freelancehub-xqif.onrender.com/)
 
 ---
 
@@ -44,3 +44,4 @@ FreelancerHub is a full-stack web application designed to connect freelancers an
 ```bash
 git clone https://github.com/yourusername/freelancerhub.git
 cd freelancerhub
+```
