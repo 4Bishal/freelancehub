@@ -2,7 +2,7 @@
 
 FreelancerHub is a full-stack web application designed to connect freelancers and clients in a seamless and efficient platform. Built with the MERN stack and Tailwind CSS, this project allows users to browse projects, post jobs, bid on tasks, and manage freelance workflows with ease.
 
-![FreelancerHub Logo](freelancehub-ui/public/favicon-96x96.png)
+![FreelancerHub Logo](frontend/public/favicon-96x96.png)
 
 ---
 
