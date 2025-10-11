@@ -17,20 +17,22 @@ const app = express();
 const PORT = process.env.PORT || 8000
 
 
-// Middlewares
+const allowedOrigins = [
+    "https://freelancehub-ytg5.onrender.com",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+];
+
 app.use(cors({
-    origin: (origin, callback) => {
-        const allowed = [
-            "https://freelancehub-ytg5.onrender.com",
-            "http://localhost:5173",
-        ];
-        if (!origin || allowed.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("CORS not allowed for this origin"));
-        }
+    origin: function (origin, callback) {
+        // allow requests with no origin like mobile apps or curl
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        return callback(new Error("Not allowed by CORS"));
     },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
+    preflightContinue: false, // important for OPTIONS
 }));
 
 
