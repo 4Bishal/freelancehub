@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, User, Lock, Briefcase } from "lucide-react";
-import axios from 'axios';
+import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import server from "../environment";
 
@@ -14,6 +14,9 @@ export default function Register() {
         role: "freelancer",
     });
 
+    const [message, setMessage] = useState(""); // Inline feedback
+    const [isError, setIsError] = useState(false); // Track success/error
+
     const handleChange = (e) => {
         setFormData((prev) => ({
             ...prev,
@@ -21,60 +24,49 @@ export default function Register() {
         }));
     };
 
-
-    const handleError = (err) =>
-        toast.error(err, {
-            position: "bottom-left",
-        });
-    const handleSuccess = (msg) =>
-        toast.success(msg, {
-            position: "bottom-right",
-        });
+    const showToast = (msg, error = false) => {
+        if (error) toast.error(msg, { position: "bottom-left" });
+        else toast.success(msg, { position: "bottom-right" });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage(""); // reset previous message
         try {
             const { data } = await axios.post(
                 `${server}/signup`,
-                {
-                    ...formData,
-                },
+                { ...formData },
                 { withCredentials: true }
             );
-            const { success, message } = data;
+
+            const { success, message: msg } = data;
+
+            setMessage(msg);
+            setIsError(!success);
+            showToast(msg, !success);
+
             if (success) {
-                handleSuccess(message);
-                setTimeout(() => {
-                    navigate("/");
-                }, 1000);
-            } else {
-                handleError(message);
+                setFormData({
+                    email: "",
+                    username: "",
+                    password: "",
+                    role: "freelancer",
+                });
+                setTimeout(() => navigate("/login"), 1000);
             }
         } catch (error) {
-            console.log(error);
+            const errMsg = error.response?.data?.message || "Something went wrong. Try again.";
+            setMessage(errMsg);
+            setIsError(true);
+            showToast(errMsg, true);
+            console.error("Registration error:", error);
         }
-        setFormData({
-            ...formData,
-            email: "",
-            username: "",
-            password: "",
-            role: "freelancer",
-        });
-
     };
 
     return (
-        <div
-            className="flex flex-col items-center justify-center  px-4"
-            style={{ marginTop: "6rem", marginBottom: "0rem" }}
-        >
-            <div
-                className="bg-white p-8 rounded-2xl max-w-md w-full
-      max-h-[calc(100vh-8rem)] overflow-auto shadow-2xl border border-gray-300"
-            >
-                <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-                    Create an Account
-                </h2>
+        <div className="flex flex-col items-center justify-center px-4" style={{ marginTop: "6rem" }}>
+            <div className="bg-white p-8 rounded-2xl max-w-md w-full max-h-[calc(100vh-8rem)] overflow-auto shadow-2xl border border-gray-300">
+                <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Create an Account</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     {/* Email Field */}
@@ -140,18 +132,22 @@ export default function Register() {
                     >
                         Register
                     </button>
+
+                    {/* Inline Message */}
+                    {message && (
+                        <p className={`mt-2 text-center ${isError ? "text-red-600" : "text-green-600"}`}>
+                            {message}
+                        </p>
+                    )}
                 </form>
 
                 <p className="text-sm text-center mt-4 text-gray-600">
                     Already have an account?{" "}
-                    <Link to="/login" className="text-indigo-600 hover:underline">
-                        Login here
-                    </Link>
+                    <Link to="/login" className="text-indigo-600 hover:underline">Login here</Link>
                 </p>
             </div>
 
             <ToastContainer />
         </div>
-
     );
 }
