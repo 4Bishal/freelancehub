@@ -6,14 +6,16 @@ import { toast } from "react-toastify";
 
 export default function Navbar() {
     const navigate = useNavigate();
-    const [isDropdownOpen, setDropdownOpen] = useState(false);
-    const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
     const location = useLocation();
     const { isAuthenticated, role, username, logout } = useAuth();
 
+    const [isDropdownOpen, setDropdownOpen] = useState(false);
+    const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    // Close dropdowns on route change
     useEffect(() => {
         setDropdownOpen(false);
-        setMobileMenuOpen(false); // close menu on route change
+        setMobileMenuOpen(false);
     }, [location]);
 
     const avatarSrc =
@@ -25,20 +27,20 @@ export default function Navbar() {
 
     const roleDisplay = role ? role.charAt(0).toUpperCase() + role.slice(1) : "";
 
+    // Navigation items
     const publicNavItems = [
         { name: "Home", to: "/" },
         { name: "About", to: "/about" },
     ];
 
-    const authNavItems = !isAuthenticated
-        ? [
+    const authNavItems = isAuthenticated
+        ? []
+        : [
             { name: "Register", to: "/register" },
             { name: "Login", to: "/login" },
-        ]
-        : [];
+        ];
 
     const protectedNavItems = [];
-
     if (isAuthenticated && role === "freelancer") {
         protectedNavItems.push({ name: "Browse Projects", to: "/browseprojects" });
     }
@@ -55,7 +57,7 @@ export default function Navbar() {
         const success = await logout();
         if (success) {
             toast.success("Logout successful");
-            navigate("/");  // Navigate to home after logout success
+            navigate("/");
         } else {
             toast.error("Logout failed, please try again");
         }
@@ -71,7 +73,7 @@ export default function Navbar() {
                 </Link>
             </div>
 
-            {/* Desktop Nav Items */}
+            {/* Desktop Nav */}
             <div className="hidden md:flex space-x-6 text-gray-700">
                 {allNavItems.map(({ name, to }, idx) => (
                     <Link
@@ -85,7 +87,7 @@ export default function Navbar() {
                 ))}
             </div>
 
-            {/* Mobile Hamburger Button */}
+            {/* Mobile Hamburger */}
             <div className="md:hidden">
                 <button
                     onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
@@ -148,7 +150,7 @@ export default function Navbar() {
                 </div>
             )}
 
-            {/* Mobile Menu Panel */}
+            {/* Mobile Menu */}
             {isMobileMenuOpen && (
                 <div className="absolute top-20 left-0 w-full bg-white shadow-lg border-t z-40 md:hidden">
                     <div className="flex flex-col px-6 py-4 space-y-3 text-gray-800">
@@ -186,7 +188,10 @@ export default function Navbar() {
                                     </Link>
                                 )}
                                 <button
-                                    onClick={handleLogout}
+                                    onClick={() => {
+                                        handleLogout();
+                                        setMobileMenuOpen(false);
+                                    }}
                                     className="flex items-center text-sm text-red-600 mt-2"
                                 >
                                     <LogOut className="w-4 h-4 mr-2" /> Logout

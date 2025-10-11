@@ -4,6 +4,7 @@ import { Mail, User, Lock, Briefcase } from "lucide-react";
 import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import server from "../environment";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -13,24 +14,24 @@ export default function Register() {
         password: "",
         role: "freelancer",
     });
-
-    const [loading, setLoading] = useState(false); // <-- Loading state
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState(""); // "success" or "error"
 
     const handleChange = (e) => {
-        setFormData((prev) => ({
-            ...prev,
-            [e.target.name]: e.target.value,
-        }));
+        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const handleError = (err) =>
-        toast.error(err, { position: "bottom-left" });
-    const handleSuccess = (msg) =>
-        toast.success(msg, { position: "bottom-right" });
+    const showToast = (msg, type) => {
+        if (type === "success") toast.success(msg, { position: "bottom-right" });
+        else toast.error(msg, { position: "bottom-left" });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true); // <-- Start loading
+        setLoading(true);
+        setMessage(""); // reset inline message
+
         try {
             const { data } = await axios.post(
                 `${server}/signup`,
@@ -38,26 +39,25 @@ export default function Register() {
                 { withCredentials: true }
             );
 
-            const { success, message } = data;
-            if (success) {
-                handleSuccess(message);
-                setTimeout(() => navigate("/"), 1000);
-            } else {
-                handleError(message);
-            }
-        } catch (error) {
-            console.error(error);
-            handleError("Something went wrong!");
-        }
-        setLoading(false); // <-- Stop loading
+            const { success, message: msg } = data;
+            setMessage(msg);
+            setMessageType(success ? "success" : "error");
+            showToast(msg, success ? "success" : "error");
 
-        // Reset form
-        setFormData({
-            email: "",
-            username: "",
-            password: "",
-            role: "freelancer",
-        });
+            if (success) {
+                setTimeout(() => navigate("/"), 1000);
+                // Reset form only on success
+                setFormData({ email: "", username: "", password: "", role: "freelancer" });
+            }
+        } catch (err) {
+            console.error(err);
+            const errorMsg = err.response?.data?.message || "Something went wrong!";
+            setMessage(errorMsg);
+            setMessageType("error");
+            showToast(errorMsg, "error");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -135,7 +135,6 @@ export default function Register() {
                     >
                         {loading ? (
                             <>
-                                {/* Modern spinner */}
                                 <svg
                                     className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -163,7 +162,12 @@ export default function Register() {
                         )}
                     </button>
 
-
+                    {/* Inline message */}
+                    {message && (
+                        <p className={`text-sm mt-2 text-center ${messageType === "error" ? "text-red-600" : "text-green-600"}`}>
+                            {message}
+                        </p>
+                    )}
                 </form>
 
                 <p className="text-sm text-center mt-4 text-gray-600">

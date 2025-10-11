@@ -14,13 +14,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// ✅ CORS configuration
+// ✅ Allowed origins for CORS
 const allowedOrigins = [
     "https://freelancehub-ytg5.onrender.com",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ];
 
+// ✅ Middleware
 app.use(
     cors({
         origin: function (origin, callback) {
@@ -32,15 +33,13 @@ app.use(
         credentials: true,
     })
 );
-
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Token verification helper
-const verifyToken = (req, res) => {
+/* --------------------------- TOKEN VERIFICATION -------------------------- */
+const verifyToken = (req) => {
     const token = req.cookies.token;
     if (!token) return null;
-
     try {
         const decoded = jwt.verify(token, process.env.TOKEN_KEY);
         return decoded.id;
@@ -49,11 +48,12 @@ const verifyToken = (req, res) => {
     }
 };
 
+/* ------------------------------- AUTH ROUTES ----------------------------- */
+
 // ✅ Signup
 app.post("/signup", async (req, res) => {
     try {
         const { email, password, username, role, createdAt } = req.body;
-
         if (!email || !password || !username || !role)
             return res.status(400).json({ message: "All fields required" });
 
@@ -105,7 +105,7 @@ app.post("/login", async (req, res) => {
 
 // ✅ Auth check
 app.post("/auth", async (req, res) => {
-    const userId = verifyToken(req, res);
+    const userId = verifyToken(req);
     if (!userId) return res.json({ status: false });
 
     const user = await UserModel.findById(userId).select("-password");
@@ -120,21 +120,23 @@ app.post("/logout", (req, res) => {
     res.json({ status: true, message: "Logged out" });
 });
 
-// ✅ Create project
+/* ------------------------------ PROJECT ROUTES --------------------------- */
+
+// ✅ Create project (Client only)
 app.post("/createproject", async (req, res) => {
     try {
-        const userId = verifyToken(req, res);
-        if (!userId) return res.status(401).json({ message: "No token" });
+        const userId = verifyToken(req);
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
         const { title, description, budget, deadline, category } = req.body;
         if (!title || !description || !budget || !deadline || !category)
             return res.status(400).json({ message: "All fields required" });
 
-        const newProject = await ProjectModel.create({
+        await ProjectModel.create({
             title,
             description,
-            budget,
-            deadline,
+            budget: Number(budget),
+            deadline: new Date(deadline),
             category,
             postedby: userId,
         });
@@ -146,17 +148,17 @@ app.post("/createproject", async (req, res) => {
     }
 });
 
-// ✅ Browse projects
+// ✅ Get all projects (Freelancers browse)
 app.get("/browseprojects", async (req, res) => {
     try {
         const projects = await ProjectModel.find({}).populate("postedby", "-password");
         res.json(projects);
-    } catch {
+    } catch (err) {
         res.status(500).json({ message: "Something went wrong" });
     }
 });
 
-// ✅ Get one project
+// ✅ Get single project by ID
 app.get("/getproject/:id", async (req, res) => {
     try {
         const project = await ProjectModel.findById(req.params.id).populate("postedby", "-password");
@@ -167,7 +169,119 @@ app.get("/getproject/:id", async (req, res) => {
     }
 });
 
-// ✅ MongoDB + server start
+// ✅ Get projects posted by logged-in client
+app.get("/getprojects", async (req, res) => {
+    try {
+        const userId = verifyToken(req);
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+        const projects = await ProjectModel.find({ postedby: userId }).populate("postedby", "-password");
+        res.status(200).json({ message: "Done", projects, success: true });
+    } catch (err) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+// ✅ Edit project
+app.put("/editproject/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedData = req.body;
+        await ProjectModel.findByIdAndUpdate(id, updatedData, { new: true });
+        res.json({ message: "Project updated successfully", success: true });
+    } catch (err) {
+        res.status(400).json({ message: "Error occurred", error: err.message, success: false });
+    }
+});
+
+// ✅ Delete project
+app.delete("/deleteproject/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        await ProjectModel.findByIdAndDelete(id);
+        res.json({ message: "Project deleted successfully", success: true });
+    } catch (err) {
+        res.status(500).json({ message: "Error deleting project" });
+    }
+});
+
+/* ------------------------------- BID ROUTES ------------------------------ */
+
+// ✅ Create bid
+app.post("/createbid/:id", async (req, res) => {
+    try {
+        const userId = verifyToken(req);
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+        const { id } = req.params;
+        const { amount, message } = req.body;
+
+        await BidModel.create({
+            amount: Number(amount),
+            message,
+            freelancer: userId,
+            project: id,
+        });
+
+        res.json({ message: "Your bid has been placed", success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error placing bid" });
+    }
+});
+
+// ✅ Get bids by freelancer
+app.get("/getmybids", async (req, res) => {
+    try {
+        const userId = verifyToken(req);
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+        const bids = await BidModel.find({ freelancer: userId }).populate([
+            { path: "freelancer", select: "-password" },
+            { path: "project" },
+        ]);
+
+        res.status(200).json({ message: "Done", bids, success: true });
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching bids" });
+    }
+});
+
+// ✅ Get bids for a specific project (client view)
+app.get("/getprojectbids/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const project = await ProjectModel.findById(id);
+        const bids = await BidModel.find({ project: id }).populate("freelancer", "username");
+        res.status(200).json({ bids, projectTitle: project.title });
+    } catch (err) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+// ✅ Update bid status (client)
+app.put("/updatebidstatus/:bidId", async (req, res) => {
+    try {
+        const { status } = req.body;
+        const { bidId } = req.params;
+
+        const updatedBid = await BidModel.findByIdAndUpdate(bidId, { status }, { new: true });
+        if (!updatedBid) return res.status(404).json({ message: "Bid not found" });
+
+        if (status === "won") {
+            await ProjectModel.findByIdAndUpdate(updatedBid.project, {
+                $addToSet: { bids: updatedBid._id },
+            });
+        }
+
+        res.json(updatedBid);
+    } catch (err) {
+        res.status(500).json({ message: "Failed to update bid status" });
+    }
+});
+
+/* ---------------------------- SERVER CONNECTION -------------------------- */
+
 app.listen(PORT, async () => {
     console.log(`🚀 Server running on port ${PORT}`);
     try {

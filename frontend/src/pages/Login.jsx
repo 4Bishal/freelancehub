@@ -85,7 +85,12 @@ export default function Login() {
                             className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                         />
                     </div>
-
+                    {/* Inline message */}
+                    {message && (
+                        <p className={`text-sm mt-2 text-center ${messageType === "error" ? "text-red-600" : "text-green-600"}`}>
+                            {message}
+                        </p>
+                    )}
                     {/* Submit Button with spinner */}
                     <button
                         type="submit"
