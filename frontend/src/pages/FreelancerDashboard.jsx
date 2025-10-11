@@ -4,7 +4,6 @@ import { BadgeCheck, XCircle, Search, Send } from "lucide-react";
 import axios from "axios";
 import server from "../environment";
 
-
 const FreelancerDashboard = () => {
     const [myBids, setMyBids] = useState([]);
 

@@ -5,34 +5,28 @@ import { useAuth } from "../components/AuthContext";
 const ProtectedRoute = ({ allowedRoles, children }) => {
     const { role, isAuthenticated, loading } = useAuth();
 
-    if (loading) {
-        return <div className="loading-spinner">Loading...</div>;
-    }
+    if (loading) return <div>Loading...</div>;
 
     if (!isAuthenticated) {
         return (
             <Navigate
                 to="/login"
                 replace
-                state={{
-                    toastMessage: "Please login to continue.",
-                    toastType: "warn",
-                }}
+                state={{ toastMessage: "Please login to continue.", toastType: "warn" }}
             />
         );
     }
 
-    const roles = Array.isArray(allowedRoles)
-        ? allowedRoles
-        : [allowedRoles];
+    if (!allowedRoles.includes(role)) {
+        const allowed = allowedRoles.join(" or ");
+        const properRole = allowed.charAt(0).toUpperCase() + allowed.slice(1);
 
-    if (!roles.includes(role)) {
         return (
             <Navigate
                 to="/"
                 replace
                 state={{
-                    toastMessage: `Access denied: ${roles.join(" or ")} only`,
+                    toastMessage: `Access denied: ${properRole}-only allowed`,
                     toastType: "warn",
                 }}
             />

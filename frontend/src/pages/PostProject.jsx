@@ -13,21 +13,29 @@ const PostProject = () => {
         deadline: "",
         category: "",
     });
-    const [loading, setLoading] = useState(false); // <-- loading state
 
+    // Get today's date in YYYY-MM-DD format for min attribute
     const today = new Date();
     const minDate = today.toISOString().split("T")[0];
 
     const handleChange = (e) => {
-        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        setFormData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
     };
 
-    const handleError = (err) => toast.error(err, { position: "bottom-left" });
-    const handleSuccess = (msg) => toast.success(msg, { position: "bottom-left" });
+    const handleError = (err) =>
+        toast.error(err, {
+            position: "bottom-left",
+        });
+    const handleSuccess = (msg) =>
+        toast.success(msg, {
+            position: "bottom-left",
+        });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true); // start loading
         try {
             const { data } = await axios.post(
                 `${server}/createproject`,
@@ -50,7 +58,6 @@ const PostProject = () => {
         } catch (err) {
             handleError("Posting Project failed. Please try again.");
         }
-        setLoading(false); // stop loading
         setFormData({ title: "", description: "", budget: "", deadline: "", category: "" });
     };
 
@@ -142,44 +149,16 @@ const PostProject = () => {
                             onChange={handleChange}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             required
-                            min={minDate}
+                            min={minDate} // restrict past dates
                         />
                     </div>
 
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className={`w-full bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition flex items-center justify-center ${loading ? "cursor-not-allowed bg-indigo-500" : ""
-                            }`}
-                        disabled={loading}
+                        className="w-full bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition"
                     >
-                        {loading ? (
-                            <>
-                                <svg
-                                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <circle
-                                        className="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                        className="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                    ></path>
-                                </svg>
-                                Posting...
-                            </>
-                        ) : (
-                            "Post Project"
-                        )}
+                        Post Project
                     </button>
                 </form>
             </div>

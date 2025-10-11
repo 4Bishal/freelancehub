@@ -8,10 +8,9 @@ export const AuthProvider = ({ children }) => {
     const [role, setRole] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [username, setUsername] = useState("");
 
-    // ✅ Verify JWT from backend
     const verifyAuth = async () => {
-        setLoading(true);
         try {
             const { data } = await axios.post(
                 `${server}/auth`,
@@ -20,13 +19,16 @@ export const AuthProvider = ({ children }) => {
             );
 
             if (data.status) {
-                setRole(data.role);
+                setRole(data.role); // Ensure backend sends role
                 setIsAuthenticated(true);
+                setUsername(data.username)
             } else {
+                setUsername("")
                 setRole(null);
                 setIsAuthenticated(false);
             }
         } catch (error) {
+            setUsername("")
             setRole(null);
             setIsAuthenticated(false);
         } finally {
@@ -38,32 +40,14 @@ export const AuthProvider = ({ children }) => {
         verifyAuth();
     }, []);
 
-    // ✅ Login user
-    const loginUser = async (email, password) => {
-        try {
-            const { data } = await axios.post(
-                `${server}/login`,
-                { email, password },
-                { withCredentials: true }
-            );
-
-            if (data.success) {
-                setRole(data.role);
-                setIsAuthenticated(true);
-                return { success: true };
-            } else {
-                setRole(null);
-                setIsAuthenticated(false);
-                return { success: false, message: data.message };
-            }
-        } catch (err) {
-            setRole(null);
-            setIsAuthenticated(false);
-            return { success: false, message: err.message };
-        }
+    // Add loginUser method to update auth state after login
+    const loginUser = (userRole, username) => {
+        setUsername(username)
+        setRole(userRole);
+        setIsAuthenticated(true);
     };
 
-    // ✅ Logout user
+    // Existing logout method
     const logout = async () => {
         try {
             await axios.post(`${server}/logout`, {}, { withCredentials: true });
@@ -77,16 +61,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider
-            value={{
-                role,
-                isAuthenticated,
-                loading,
-                verifyAuth,
-                loginUser,
-                logout,
-            }}
-        >
+        <AuthContext.Provider value={{ role, isAuthenticated, loading, loginUser, logout, username }}>
             {children}
         </AuthContext.Provider>
     );
