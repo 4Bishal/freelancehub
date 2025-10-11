@@ -20,30 +20,37 @@ export default function EditProject() {
     const today = new Date();
     const minDate = today.toISOString().split("T")[0];
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
-        // Fetch current project data
         const fetchProject = async () => {
             try {
                 const res = await axios.get(`${server}/getproject/${id}`, {
                     withCredentials: true,
                 });
-                const data = res.data;
+                const data = res.data.project;
 
                 setProjectData({
                     title: data.title,
                     description: data.description,
-                    deadline: data.deadline.slice(0, 10), // for input[type=date]
+                    deadline: data.deadline.slice(0, 10),
                     budget: data.budget,
                     category: data.category,
                 });
                 setPostedBy(data.postedby.username);
             } catch (err) {
                 console.error("Failed to fetch project", err);
+            } finally {
+                setLoading(false);
             }
         };
-
         fetchProject();
     }, [id]);
+
+    if (loading) {
+        return <p className="text-center mt-10">Loading project data...</p>;
+    }
+
 
     const handleError = (err) =>
         toast.error(err, {

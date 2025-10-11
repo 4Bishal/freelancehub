@@ -1,24 +1,21 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useAuth } from "../components/AuthContext";
-import useRedirectedToast from "../hooks/useRedirectedToast";
 import server from "../environment";
 
 export default function Login() {
     const navigate = useNavigate();
     const { loginUser } = useAuth();
 
-    useRedirectedToast();
-
     const [formData, setFormData] = useState({ email: "", password: "" });
-    const [message, setMessage] = useState(""); // for inline message
-    const [isError, setIsError] = useState(false); // track error or success
+    const [message, setMessage] = useState("");
+    const [isError, setIsError] = useState(false);
 
     const handleChange = (e) => {
-        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     const showToast = (msg, error = false) => {
@@ -43,9 +40,17 @@ export default function Login() {
 
             if (success) {
                 loginUser(role, username);
+
+                // Clear form fields only on success
+                setFormData({ email: "", password: "" });
+
+                // Navigate to home page first
+                navigate("/");
+
+                // Then refresh the entire page after 1 second
                 setTimeout(() => {
-                    navigate("/", { state: { toastMessage: "Welcome to FreelancerHub!" } });
-                }, 500);
+                    window.location.reload();
+                }, 1000); // 1 second delay
             }
         } catch (err) {
             const errMsg = err.response?.data?.message || "Login failed. Please try again.";
@@ -53,13 +58,13 @@ export default function Login() {
             setIsError(true);
             showToast(errMsg, true);
         }
-        setFormData({ email: "", password: "" });
     };
 
+
     return (
-        <div className="flex flex-col items-center justify-center px-4 py-12 sm:py-20" style={{ marginTop: "6rem" }}>
-            <div className="bg-white p-8 rounded-2xl max-w-md w-full max-h-[calc(100vh-6rem)] overflow-auto shadow-2xl border border-gray-300">
-                <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Login to Your Account</h2>
+        <div className="flex flex-col items-center justify-center px-4 py-12 sm:py-20 mt-24">
+            <div className="bg-white p-8 rounded-2xl max-w-md w-full shadow-2xl border border-gray-300">
+                <h2 className="text-2xl font-bold text-center mb-6">Login to Your Account</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="relative">
@@ -95,7 +100,6 @@ export default function Login() {
                         Login
                     </button>
 
-                    {/* Inline message */}
                     {message && (
                         <p className={`mt-2 text-center ${isError ? "text-red-600" : "text-green-600"}`}>
                             {message}
@@ -108,6 +112,7 @@ export default function Login() {
                     <Link to="/register" className="text-indigo-600 hover:underline">Register here</Link>
                 </p>
             </div>
+
             <ToastContainer />
         </div>
     );

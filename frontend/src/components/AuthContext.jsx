@@ -10,26 +10,21 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [username, setUsername] = useState("");
 
+    // Verify user session on load
     const verifyAuth = async () => {
         try {
-            const { data } = await axios.post(
-                `${server}/auth`,
-                {},
-                { withCredentials: true }
-            );
-
-
+            const { data } = await axios.post(`${server}/auth`, {}, { withCredentials: true });
             if (data.status) {
-                setRole(data.role); // Ensure backend sends role
+                setRole(data.role);
                 setIsAuthenticated(true);
-                setUsername(data.username)
+                setUsername(data.username);
             } else {
-                setUsername("")
+                setUsername("");
                 setRole(null);
                 setIsAuthenticated(false);
             }
-        } catch (error) {
-            setUsername("")
+        } catch (err) {
+            setUsername("");
             setRole(null);
             setIsAuthenticated(false);
         } finally {
@@ -41,28 +36,29 @@ export const AuthProvider = ({ children }) => {
         verifyAuth();
     }, []);
 
-    // Add loginUser method to update auth state after login
-    const loginUser = (userRole, username) => {
-        setUsername(username)
+    // Login function to update context immediately
+    const loginUser = (userRole, userName) => {
         setRole(userRole);
+        setUsername(userName);
         setIsAuthenticated(true);
     };
 
-    // Existing logout method
+    // Logout
     const logout = async () => {
         try {
             await axios.post(`${server}/logout`, {}, { withCredentials: true });
             setRole(null);
+            setUsername("");
             setIsAuthenticated(false);
             return true;
-        } catch (error) {
-            console.error("Logout failed:", error);
+        } catch (err) {
+            console.error("Logout failed:", err);
             return false;
         }
     };
 
     return (
-        <AuthContext.Provider value={{ role, isAuthenticated, loading, loginUser, logout, username }}>
+        <AuthContext.Provider value={{ role, username, isAuthenticated, loginUser, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

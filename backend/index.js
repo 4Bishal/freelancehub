@@ -195,7 +195,8 @@ app.delete("/deleteproject/:id", verifyToken, allowRoles(["client"]), async (req
 // Get projects posted by client
 app.get("/getprojects", verifyToken, allowRoles(["client"]), async (req, res) => {
     try {
-        const projects = await ProjectModel.find({ postedby: req.userId });
+        const projects = await ProjectModel.find({ postedby: req.userId }).populate("postedby", "-password");
+        console.log(projects);
         res.json({ success: true, projects });
     } catch (err) {
         res.status(500).json({ message: "Server error", success: false, error: err.message });

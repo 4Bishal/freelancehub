@@ -17,12 +17,15 @@ const ClientDashboard = () => {
                     withCredentials: true,
                 });
 
+                const postedBy = res.data.projects[0].postedby;
+
+
                 const formatted = res.data.projects.map((project) => ({
                     ...project,
                     deadlineDate: new Date(project.deadline), // Keep date object for comparison
                     deadline: new Date(project.deadline).toLocaleDateString("en-GB"), // Format DD/MM/YYYY
                     budget: `${project.budget.toLocaleString()}`,
-                    postedby: project.postedby?.username || "Unknown",
+                    postedby: postedBy?.username,
                     id: project._id,
                 }));
 

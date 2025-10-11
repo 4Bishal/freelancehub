@@ -11,7 +11,6 @@ export default function Navbar() {
     const location = useLocation();
     const { isAuthenticated, role, username, logout } = useAuth();
 
-
     useEffect(() => {
         setDropdownOpen(false);
         setMobileMenuOpen(false); // close menu on route change
@@ -96,7 +95,7 @@ export default function Navbar() {
                 </button>
             </div>
 
-            {/* User Avatar and Dropdown */}
+            {/* User Avatar and Dropdown (Desktop) */}
             {isAuthenticated && (
                 <div className="hidden md:flex relative items-center space-x-3">
                     <span className="text-gray-700 font-semibold hidden lg:inline">
@@ -118,13 +117,11 @@ export default function Navbar() {
 
                     {isDropdownOpen && (
                         <div className="absolute right-0 top-full mt-2 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
-                            {/* Username with icon */}
                             <div className="flex items-center px-4 py-2 border-b text-gray-800 text-sm">
                                 <User className="w-4 h-4 mr-2 text-indigo-600" />
-                                <span className="font-semibold">Hi , {username}</span>
+                                <span className="font-semibold">Hi, {username}</span>
                             </div>
 
-                            {/* Dashboard link */}
                             <Link
                                 to={getDashboardLink()}
                                 onClick={() => setDropdownOpen(false)}
@@ -133,7 +130,6 @@ export default function Navbar() {
                                 <LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard
                             </Link>
 
-                            {/* Client-only link */}
                             {role === "client" && (
                                 <Link
                                     to="/postproject"
@@ -146,7 +142,6 @@ export default function Navbar() {
 
                             <div className="border-t my-1"></div>
 
-                            {/* Logout button */}
                             <button
                                 onClick={handleLogout}
                                 className="flex items-center w-full px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
@@ -155,15 +150,13 @@ export default function Navbar() {
                             </button>
                         </div>
                     )}
-
-
                 </div>
             )}
 
             {/* Mobile Menu Panel */}
             {isMobileMenuOpen && (
                 <div className="absolute top-20 left-0 w-full bg-white shadow-lg border-t z-40 md:hidden">
-                    <div className="flex flex-col px-6 py-4 space-y-3 text-gray-800">
+                    <div className="flex flex-col px-6 py-4 space-y-2 text-gray-800">
                         {allNavItems.map(({ name, to }, idx) => (
                             <Link
                                 key={idx}
@@ -178,13 +171,12 @@ export default function Navbar() {
                         {isAuthenticated && (
                             <>
                                 <hr />
-                                <span className="text-sm text-gray-600 mb-2">
-                                    Role: {roleDisplay}
-                                </span>
+                                <span className="text-sm text-gray-600">Role: {roleDisplay}</span>
+                                <span className="text-sm text-gray-800 font-semibold">Hi, {username}</span>
                                 <Link
                                     to={getDashboardLink()}
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="flex items-center text-sm text-gray-700"
+                                    className="flex items-center text-sm text-gray-700 mt-1"
                                 >
                                     <LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard
                                 </Link>
@@ -192,7 +184,7 @@ export default function Navbar() {
                                     <Link
                                         to="/postproject"
                                         onClick={() => setMobileMenuOpen(false)}
-                                        className="flex items-center text-sm text-gray-700"
+                                        className="flex items-center text-sm text-gray-700 mt-1"
                                     >
                                         <User className="w-4 h-4 mr-2" /> Post Project
                                     </Link>
