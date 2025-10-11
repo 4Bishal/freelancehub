@@ -123,8 +123,9 @@ app.post("/logout", (req, res) => {
 app.post("/auth", verifyToken, async (req, res) => {
     try {
         const user = await UserModel.findById(req.userId).select("-password");
+        console.log(user);
         if (!user) return res.status(404).json({ status: false, message: "User not found" });
-        res.json({ status: true, user: user.username, role: user.role });
+        res.json({ status: true, username: user.username, role: user.role });
     } catch (err) {
         res.status(500).json({ status: false, message: "Server error", error: err.message });
     }

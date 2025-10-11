@@ -11,6 +11,7 @@ export default function Navbar() {
     const location = useLocation();
     const { isAuthenticated, role, username, logout } = useAuth();
 
+
     useEffect(() => {
         setDropdownOpen(false);
         setMobileMenuOpen(false); // close menu on route change

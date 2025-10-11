@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
                 { withCredentials: true }
             );
 
+
             if (data.status) {
                 setRole(data.role); // Ensure backend sends role
                 setIsAuthenticated(true);
