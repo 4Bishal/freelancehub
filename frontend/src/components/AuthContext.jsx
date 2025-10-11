@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    // Verify JWT token from backend
+    // ✅ Verify JWT from backend
     const verifyAuth = async () => {
         setLoading(true);
         try {
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
         verifyAuth();
     }, []);
 
-    // Login user: call backend login, update state
+    // ✅ Login user
     const loginUser = async (email, password) => {
         try {
             const { data } = await axios.post(
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Logout user: call backend logout, clear state
+    // ✅ Logout user
     const logout = async () => {
         try {
             await axios.post(`${server}/logout`, {}, { withCredentials: true });
@@ -78,7 +78,14 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider
-            value={{ role, isAuthenticated, loading, verifyAuth, loginUser, logout }}
+            value={{
+                role,
+                isAuthenticated,
+                loading,
+                verifyAuth,
+                loginUser,
+                logout,
+            }}
         >
             {children}
         </AuthContext.Provider>
