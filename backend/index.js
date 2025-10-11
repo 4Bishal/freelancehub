@@ -40,10 +40,6 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-app.get("/", (req, res) => {
-    res.send("Hello");
-})
-
 
 app.post("/signup", async (req, res, next) => {
     try {

@@ -9,7 +9,7 @@ import server from "../environment";
 
 export default function Login() {
     const navigate = useNavigate();
-    console.log(server);
+    // console.log(server);
     const { loginUser } = useAuth();
     useRedirectedToast();
 
