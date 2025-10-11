@@ -14,7 +14,8 @@ const BrowseProjects = () => {
                 const res = await axios.get(`${server}/browseprojects`, {
                     withCredentials: true,
                 });
-                const formatted = res.data.map((project) => ({
+                console.log(res)
+                const formatted = res.data.projects.map((project) => ({
                     ...project,
                     deadline: new Date(project.deadline),
                     postedby: project.postedby?.username || "Unknown",
