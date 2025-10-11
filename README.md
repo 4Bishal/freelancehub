@@ -8,7 +8,7 @@ FreelancerHub is a full-stack web application designed to connect freelancers an
 
 ## 🌐 Live Demo
 
-[Visit FreelancerHub 🚀](https://your-deployment-link.com)
+[Visit FreelancerHub 🚀]https://freelancehub-xqif.onrender.com/
 
 ---
 
