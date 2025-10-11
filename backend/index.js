@@ -14,6 +14,8 @@ const { BidModel } = require("./models/BidModel");
 dotenv.config();
 const app = express();
 
+const PORT = process.env.PORT || 8000
+
 
 // Middlewares
 app.use(
@@ -278,7 +280,7 @@ app.put('/updatebidstatus/:bidId', async (req, res) => {
 
 
 
-app.listen(5000, async () => {
+app.listen(PORT, async () => {
     console.log("App is Listening!!");
     try {
         await mongoose.connect("mongodb://127.0.0.1:27017/freelancerhub");
