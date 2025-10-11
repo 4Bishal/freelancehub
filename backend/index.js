@@ -290,7 +290,7 @@ const start = async () => {
     const connectionDb = await mongoose.connect(process.env.MONGO_URL);
     console.log(`Connection established with host  : ${connectionDb.connection.host}`);
     app.listen(app.get("port"), () => {
-        console.log("App listening on 8000!!!");
+        console.log(`App listening on ${app.get("port")}!!!`);
     })
 }
 

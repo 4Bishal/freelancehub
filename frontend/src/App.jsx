@@ -16,6 +16,7 @@ import BrowseProjects from "./pages/BrowseProjects";
 import MakeBid from "./pages/MakeBid";
 import ProjectDetail from "./pages/ProjectDetail";
 import ProjectBids from "./pages/ProjectBids";
+import PublicRoute from "./components/PublicRoute";
 
 function App() {
   return (
@@ -42,8 +43,23 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            {/* Public routes only for NOT authenticated users */}
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              }
+            />
             <Route path="/about" element={<About />} />
             <Route path="/*" element={<NotFound />} />
 
