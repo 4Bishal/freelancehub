@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import server from "../environment";
 import axios from "axios";
 
 const AuthContext = createContext();
@@ -7,11 +8,10 @@ export const AuthProvider = ({ children }) => {
     const [role, setRole] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
-
     const verifyAuth = async () => {
         try {
             const { data } = await axios.post(
-                "http://localhost:5000/auth",
+                `${server}/auth`,
                 {},
                 { withCredentials: true }
             );
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
     // Existing logout method
     const logout = async () => {
         try {
-            await axios.post("http://localhost:5000/logout", {}, { withCredentials: true });
+            await axios.post(`${server}/logout`, {}, { withCredentials: true });
             setRole(null);
             setIsAuthenticated(false);
             return true;

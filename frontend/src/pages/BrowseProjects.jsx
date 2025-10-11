@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router";
+import server from "../environment";
 
 const BrowseProjects = () => {
     const [allProjects, setAllProjects] = useState([]);
@@ -10,7 +11,7 @@ const BrowseProjects = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const res = await axios.get("http://localhost:5000/browseprojects", {
+                const res = await axios.get(`${server}/browseprojects`, {
                     withCredentials: true,
                 });
                 const formatted = res.data.map((project) => ({

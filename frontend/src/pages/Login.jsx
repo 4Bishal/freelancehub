@@ -5,6 +5,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useAuth } from "../components/AuthContext";  // import your context hook
 import useRedirectedToast from "../hooks/useRedirectedToast";
+import server from "../environment";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function Login() {
         setLoading(true); // start loading
         try {
             const { data } = await axios.post(
-                "http://localhost:5000/login",
+                `${server}/login`,
                 { ...formData },
                 { withCredentials: true }
             );

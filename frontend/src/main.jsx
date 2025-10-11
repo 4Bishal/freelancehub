@@ -1,23 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router";
+import { HashRouter } from "react-router-dom"; // changed
 import App from "./App";
 import './output.css';
 import { CookiesProvider } from 'react-cookie';
 import { AuthProvider } from "./components/AuthContext";
 
-
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <CookiesProvider>
         <AuthProvider>
           <App />
         </AuthProvider>
       </CookiesProvider>
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>
 );
-

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import server from '../environment';
 
 const ProjectDetail = () => {
     const { id } = useParams();
@@ -18,7 +19,7 @@ const ProjectDetail = () => {
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/getproject/${id}`, { withCredentials: true });
+                const res = await axios.get(`${server}/getproject/${id}`, { withCredentials: true });
                 const data = res.data;
 
                 setProjectData({

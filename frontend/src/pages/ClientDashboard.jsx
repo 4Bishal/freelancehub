@@ -12,7 +12,7 @@ const ClientDashboard = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const res = await axios.get("http://localhost:5000/getprojects", {
+                const res = await axios.get(`${server}/getprojects`, {
                     withCredentials: true,
                 });
 
@@ -36,7 +36,7 @@ const ClientDashboard = () => {
 
     const handleDelete = async (id) => {
         try {
-            const res = await axios.delete(`http://localhost:5000/deleteproject/${id}`, {
+            const res = await axios.delete(`${server}/deleteproject/${id}`, {
                 withCredentials: true,
             });
 

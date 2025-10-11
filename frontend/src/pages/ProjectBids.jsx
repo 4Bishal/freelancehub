@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { CheckCircle, XCircle, Clock } from "lucide-react";
+import server from "../environment";
 
 const ProjectBids = () => {
     const { id } = useParams();
@@ -14,7 +15,7 @@ const ProjectBids = () => {
         const fetchBids = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/getprojectbids/${id}`,
+                    `${server}/getprojectbids/${id}`,
                     { withCredentials: true }
                 );
                 const formatted = res.data.bids.map((bid) => ({
@@ -36,7 +37,7 @@ const ProjectBids = () => {
         setLoadingBid(acceptedBidId); // start loading
         try {
             await axios.put(
-                `http://localhost:5000/updatebidstatus/${acceptedBidId}`,
+                `${server}/updatebidstatus/${acceptedBidId}`,
                 { status: "won" },
                 { withCredentials: true }
             );
@@ -59,7 +60,7 @@ const ProjectBids = () => {
         setLoadingBid(bidId); // start loading
         try {
             await axios.put(
-                `http://localhost:5000/updatebidstatus/${bidId}`,
+                `${server}/updatebidstatus/${bidId}`,
                 { status: "lost" },
                 { withCredentials: true }
             );
@@ -149,8 +150,8 @@ const ProjectBids = () => {
                                         onClick={() => handleAccept(id)}
                                         disabled={loadingBid === id}
                                         className={`flex-1 sm:flex-none sm:w-36 py-3 px-4 rounded-md font-semibold transition duration-200 text-white shadow-md ${loadingBid === id
-                                                ? "bg-green-500 cursor-not-allowed"
-                                                : "bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                                            ? "bg-green-500 cursor-not-allowed"
+                                            : "bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
                                             }`}
                                     >
                                         {loadingBid === id ? (
@@ -182,8 +183,8 @@ const ProjectBids = () => {
                                         onClick={() => handleReject(id)}
                                         disabled={loadingBid === id}
                                         className={`flex-1 sm:flex-none sm:w-36 py-3 px-4 rounded-md font-semibold transition duration-200 text-white shadow-md ${loadingBid === id
-                                                ? "bg-red-400 cursor-not-allowed"
-                                                : "bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+                                            ? "bg-red-400 cursor-not-allowed"
+                                            : "bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
                                             }`}
                                     >
                                         {loadingBid === id ? (

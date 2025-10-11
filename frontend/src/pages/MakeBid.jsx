@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
+import server from "../environment";
 
 export default function MakeBid() {
     const [bidData, setBidData] = useState({ amount: "", message: "" });
@@ -14,7 +15,7 @@ export default function MakeBid() {
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/getproject/${id}`, { withCredentials: true });
+                const res = await axios.get(`${server}/getproject/${id}`, { withCredentials: true });
                 const data = res.data;
                 setProjectData({
                     title: data.title,
@@ -49,7 +50,7 @@ export default function MakeBid() {
 
         setLoading(true); // start loading
         try {
-            const { data } = await axios.post(`http://localhost:5000/createbid/${id}`, bidData, { withCredentials: true });
+            const { data } = await axios.post(`${server}/createbid/${id}`, bidData, { withCredentials: true });
             const { message, success } = data;
 
             if (success) {

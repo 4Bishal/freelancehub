@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BadgeCheck, XCircle, Search, Send } from "lucide-react";
 import axios from "axios";
+import server from "../environment";
 
 
 const FreelancerDashboard = () => {
@@ -10,7 +11,7 @@ const FreelancerDashboard = () => {
     useEffect(() => {
         const fetchBids = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/getmybids', { withCredentials: true });
+                const res = await axios.get(`${server}/getmybids`, { withCredentials: true });
                 const bidsPlaced = res.data.bids.map((bid) => ({
                     ...bid,
                     id: bid._id,

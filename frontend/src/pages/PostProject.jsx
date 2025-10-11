@@ -29,7 +29,7 @@ const PostProject = () => {
         setLoading(true); // start loading
         try {
             const { data } = await axios.post(
-                "http://localhost:5000/createproject",
+                `${server}/createproject`,
                 { ...formData },
                 { withCredentials: true }
             );

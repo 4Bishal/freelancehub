@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import server from "../environment";
 
 export default function EditProject() {
     const { id } = useParams();
@@ -22,7 +23,7 @@ export default function EditProject() {
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/getproject/${id}`, {
+                const res = await axios.get(`${server}:5000/getproject/${id}`, {
                     withCredentials: true,
                 });
                 const data = res.data;
@@ -55,7 +56,7 @@ export default function EditProject() {
         setLoading(true); // start loading
         try {
             const { data } = await axios.put(
-                `http://localhost:5000/editproject/${id}`,
+                `${server}/editproject/${id}`,
                 projectData,
                 { withCredentials: true }
             );

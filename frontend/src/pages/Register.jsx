@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Mail, User, Lock, Briefcase } from "lucide-react";
 import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
+import server from "../environment";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -32,7 +33,7 @@ export default function Register() {
         setLoading(true); // <-- Start loading
         try {
             const { data } = await axios.post(
-                "http://localhost:5000/signup",
+                `${server}/signup`,
                 { ...formData },
                 { withCredentials: true }
             );
