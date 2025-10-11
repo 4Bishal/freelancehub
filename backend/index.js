@@ -63,34 +63,33 @@ app.post("/signup", async (req, res, next) => {
 });
 
 
-app.post("/login", async (req, res, next) => {
+app.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log(email, password);
-        if (!email || !password) {
-            return res.json({ message: 'All fields are required' })
-        }
+        if (!email || !password)
+            return res.status(400).json({ message: "All fields required" });
+
         const user = await UserModel.findOne({ email });
-        console.log(user);
-        if (!user) {
-            return res.json({ message: 'Incorrect password or email' })
-        }
-        const auth = await bcrypt.compare(password, user.password)
-        console.log(auth);
-        if (!auth) {
-            return res.json({ message: 'Incorrect password or email' })
-        }
+        if (!user)
+            return res.status(401).json({ message: "Incorrect email or password" });
+
+        const auth = await bcrypt.compare(password, user.password);
+        if (!auth)
+            return res.status(401).json({ message: "Incorrect email or password" });
+
         const token = createSecretToken(user._id);
         res.cookie("token", token, {
-            withCredentials: true,
             httpOnly: false,
+            withCredentials: true
         });
-        res.status(201).json({ message: "User logged in successfully", success: true, role: user.role });
-        next()
-    } catch (error) {
-        console.error(error);
+
+        res.status(200).json({ message: "User logged in", success: true, role: user.role });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
     }
 });
+
 
 
 app.post("/auth", async (req, res) => {
