@@ -26,7 +26,7 @@ export default function Footer() {
                         <FacebookIcon size={20} />
                     </a>
                     <a
-                        href="https://linkedin.com"
+                        href="https://www.linkedin.com/in/bishal-bhandari-a63b8926a/"
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="LinkedIn"
@@ -35,7 +35,7 @@ export default function Footer() {
                         <LinkedinIcon size={20} />
                     </a>
                     <a
-                        href="https://github.com"
+                        href="https://github.com/4Bishal"
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="GitHub"
