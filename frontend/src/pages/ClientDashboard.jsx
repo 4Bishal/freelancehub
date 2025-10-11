@@ -4,6 +4,7 @@ import { Pencil, Trash2, Plus } from "lucide-react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import useRedirectedToast from "../hooks/useRedirectedToast";
+import server from "../environment";
 
 const ClientDashboard = () => {
     useRedirectedToast();
