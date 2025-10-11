@@ -13,7 +13,7 @@ const ClientDashboard = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const res = await axios.get("${server}/getprojects", {
+                const res = await axios.get(`${server}/getprojects`, {
                     withCredentials: true,
                 });
 
