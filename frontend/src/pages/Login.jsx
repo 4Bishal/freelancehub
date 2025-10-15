@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, Loader } from "lucide-react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useAuth } from "../components/AuthContext";
@@ -13,9 +13,10 @@ export default function Login() {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); // NEW state
 
     const handleChange = (e) => {
-        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     const showToast = (msg, error = false) => {
@@ -25,41 +26,38 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage(""); // reset message
+        setMessage("");
+        setIsLoading(true); // start loader
         try {
             const { data } = await axios.post(
                 `${server}/login`,
                 { ...formData },
                 { withCredentials: true }
             );
-            const { success, message: msg, role, username } = data;
 
+            const { success, message: msg, role, username } = data;
             setMessage(msg);
             setIsError(!success);
             showToast(msg, !success);
 
             if (success) {
                 loginUser(role, username);
-
-                // Clear form fields only on success
                 setFormData({ email: "", password: "" });
-
-                // Navigate to home page first
                 navigate("/");
 
-                // Then refresh the entire page after 1 second
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000); // 1 second delay
+                }, 1000);
             }
         } catch (err) {
             const errMsg = err.response?.data?.message || "Login failed. Please try again.";
             setMessage(errMsg);
             setIsError(true);
             showToast(errMsg, true);
+        } finally {
+            setIsLoading(false); // stop loader
         }
     };
-
 
     return (
         <div className="flex flex-col items-center justify-center px-4 py-12 sm:py-20 mt-24">
@@ -95,9 +93,18 @@ export default function Login() {
 
                     <button
                         type="submit"
-                        className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition"
+                        disabled={isLoading}
+                        className={`w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-2 px-4 rounded-md transition ${isLoading ? "opacity-70 cursor-not-allowed" : "hover:bg-indigo-700"
+                            }`}
                     >
-                        Login
+                        {isLoading ? (
+                            <>
+                                <Loader className="w-5 h-5 animate-spin" />
+                                Logging in...
+                            </>
+                        ) : (
+                            "Login"
+                        )}
                     </button>
 
                     {message && (
@@ -109,7 +116,9 @@ export default function Login() {
 
                 <p className="text-sm text-center mt-4 text-gray-600">
                     Don't have an account?{" "}
-                    <Link to="/register" className="text-indigo-600 hover:underline">Register here</Link>
+                    <Link to="/register" className="text-indigo-600 hover:underline">
+                        Register here
+                    </Link>
                 </p>
             </div>
 

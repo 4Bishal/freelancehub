@@ -20,7 +20,8 @@ const ProjectDetail = () => {
         const fetchProject = async () => {
             try {
                 const res = await axios.get(`${server}/getproject/${id}`, { withCredentials: true });
-                const data = res.data;
+                console.log(res);
+                const data = res.data.project;
 
                 setProjectData({
                     title: data.title,

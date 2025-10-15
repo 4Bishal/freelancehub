@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Loader } from "lucide-react"; // Added Loader
 
 export default function EditProject() {
-    const { id } = useParams(); // get project id from URL
+    const { id } = useParams();
     const navigate = useNavigate();
     const [postedBy, setPostedBy] = useState("");
     const [projectData, setProjectData] = useState({
@@ -16,11 +17,10 @@ export default function EditProject() {
         category: "",
     });
 
-    // Get today's date in YYYY-MM-DD format for min attribute
     const today = new Date();
     const minDate = today.toISOString().split("T")[0];
-
     const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false); // NEW: for submit button
 
     useEffect(() => {
         const fetchProject = async () => {
@@ -51,15 +51,10 @@ export default function EditProject() {
         return <p className="text-center mt-10">Loading project data...</p>;
     }
 
-
     const handleError = (err) =>
-        toast.error(err, {
-            position: "bottom-left",
-        });
+        toast.error(err, { position: "bottom-left" });
     const handleSuccess = (msg) =>
-        toast.success(msg, {
-            position: "bottom-left",
-        });
+        toast.success(msg, { position: "bottom-left" });
 
     const handleChange = (e) => {
         setProjectData({ ...projectData, [e.target.name]: e.target.value });
@@ -67,6 +62,7 @@ export default function EditProject() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true); // start loader
         try {
             const { data } = await axios.put(
                 `${server}/editproject/${id}`,
@@ -88,6 +84,9 @@ export default function EditProject() {
             }
         } catch (err) {
             console.error("Failed to update project", err);
+            handleError("Failed to update project. Try again.");
+        } finally {
+            setIsLoading(false); // stop loader
         }
     };
 
@@ -141,16 +140,24 @@ export default function EditProject() {
                     onChange={handleChange}
                     className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     required
-                    min={minDate} // restrict past dates
+                    min={minDate}
                 />
                 <button
                     type="submit"
-                    className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full sm:w-auto"
+                    disabled={isLoading}
+                    className={`bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full sm:w-auto flex items-center justify-center gap-2 ${isLoading ? "opacity-70 cursor-not-allowed" : ""
+                        }`}
                 >
-                    Update Project
+                    {isLoading ? (
+                        <>
+                            <Loader className="w-5 h-5 animate-spin" />
+                            Updating...
+                        </>
+                    ) : (
+                        "Update Project"
+                    )}
                 </button>
             </form>
         </div>
-
     );
 }

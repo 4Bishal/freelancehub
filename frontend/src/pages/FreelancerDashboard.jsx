@@ -11,11 +11,13 @@ const FreelancerDashboard = () => {
         const fetchBids = async () => {
             try {
                 const res = await axios.get(`${server}/getmybids`, { withCredentials: true });
+                console.log(res.data.bids
+                );
                 const bidsPlaced = res.data.bids.map((bid) => ({
                     ...bid,
-                    id: bid._id,
-                    projectTitle: bid.project.title,
-                    projId: bid.project._id,
+                    id: bid?._id,
+                    projectTitle: bid.project?.title,
+                    projId: bid.project?._id,
                 }));
                 setMyBids(bidsPlaced);
             } catch (error) {

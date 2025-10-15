@@ -23,6 +23,15 @@ const BidSchema = mongoose.Schema({
         ref: "project"
     }
 })
-
-
+// Pre-delete hook: remove bid reference from its project
+BidSchema.pre('findOneAndDelete', async function (next) {
+    const bid = await this.model.findOne(this.getFilter());
+    if (bid) {
+        await mongoose.model('project').findByIdAndUpdate(
+            bid.project,
+            { $pull: { bids: bid._id } }
+        );
+    }
+    next();
+});
 module.exports = { BidSchema };

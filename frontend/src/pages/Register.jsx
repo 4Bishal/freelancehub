@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, User, Lock, Briefcase } from "lucide-react";
+import { Mail, User, Lock, Briefcase, Loader } from "lucide-react"; // Added Loader
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import server from "../environment";
@@ -13,15 +13,12 @@ export default function Register() {
         password: "",
         role: "freelancer",
     });
-
-    const [message, setMessage] = useState(""); // Inline feedback
-    const [isError, setIsError] = useState(false); // Track success/error
+    const [message, setMessage] = useState("");
+    const [isError, setIsError] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); // NEW loader state
 
     const handleChange = (e) => {
-        setFormData((prev) => ({
-            ...prev,
-            [e.target.name]: e.target.value,
-        }));
+        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     const showToast = (msg, error = false) => {
@@ -31,14 +28,10 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage(""); // reset previous message
+        setMessage("");
+        setIsLoading(true); // start loader
         try {
-            const { data } = await axios.post(
-                `${server}/signup`,
-                { ...formData },
-                { withCredentials: true }
-            );
-
+            const { data } = await axios.post(`${server}/signup`, formData, { withCredentials: true });
             const { success, message: msg } = data;
 
             setMessage(msg);
@@ -46,12 +39,7 @@ export default function Register() {
             showToast(msg, !success);
 
             if (success) {
-                setFormData({
-                    email: "",
-                    username: "",
-                    password: "",
-                    role: "freelancer",
-                });
+                setFormData({ email: "", username: "", password: "", role: "freelancer" });
                 setTimeout(() => navigate("/login"), 1000);
             }
         } catch (error) {
@@ -60,6 +48,8 @@ export default function Register() {
             setIsError(true);
             showToast(errMsg, true);
             console.error("Registration error:", error);
+        } finally {
+            setIsLoading(false); // stop loader
         }
     };
 
@@ -128,9 +118,18 @@ export default function Register() {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition"
+                        disabled={isLoading}
+                        className={`w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition flex items-center justify-center gap-2 ${isLoading ? "opacity-70 cursor-not-allowed" : ""
+                            }`}
                     >
-                        Register
+                        {isLoading ? (
+                            <>
+                                <Loader className="w-5 h-5 animate-spin" />
+                                Registering...
+                            </>
+                        ) : (
+                            "Register"
+                        )}
                     </button>
 
                     {/* Inline Message */}

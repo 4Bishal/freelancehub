@@ -26,8 +26,18 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
-// UserSchema.pre("save", async function () {
-//     this.password = await bcrypt.hash(this.password, 12);
-// });
+UserSchema.pre("remove", async function (next) {
+    if (this.role === "freelancer") {
+        await mongoose.model("Bid").deleteMany({ freelancer: this._id });
+    } else if (this.role === "client") {
+        // Delete projects posted by the client
+        const projects = await mongoose.model("PostProject").find({ postedby: this._id });
+        for (const project of projects) {
+            await project.remove(); // triggers the above PostProject pre remove hook
+        }
+    }
+    next();
+});
+
 
 module.exports = { UserSchema };

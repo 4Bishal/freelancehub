@@ -31,6 +31,15 @@ const PostProjectSchema = mongoose.Schema({
     }]
 })
 
+// Pre-delete hook: delete all bids associated with this project
+PostProjectSchema.pre('findOneAndDelete', async function (next) {
+    const project = await this.model.findOne(this.getFilter());
+    if (project) {
+        // Delete all bids for this project
+        await mongoose.model('bid').deleteMany({ project: project._id });
+    }
+    next();
+});
 
 
 module.exports = { PostProjectSchema };

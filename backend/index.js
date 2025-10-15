@@ -182,11 +182,12 @@ app.put("/editproject/:id", verifyToken, allowRoles(["client"]), async (req, res
     }
 });
 
-// Delete project (Client only)
+// Delete project
 app.delete("/deleteproject/:id", verifyToken, allowRoles(["client"]), async (req, res) => {
     try {
         const deletedProject = await ProjectModel.findByIdAndDelete(req.params.id);
-        res.json({ message: "Project deleted successfully", success: true, project: deletedProject });
+        if (!deletedProject) return res.status(404).json({ message: "Project not found", success: false });
+        res.json({ message: "Project and all its bids deleted", success: true });
     } catch (err) {
         res.status(500).json({ message: "Error deleting project", success: false, error: err.message });
     }

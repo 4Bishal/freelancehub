@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { Loader } from "lucide-react"; // Added Loader
 import server from "../environment";
 
 const PostProject = () => {
@@ -13,51 +14,39 @@ const PostProject = () => {
         deadline: "",
         category: "",
     });
+    const [isLoading, setIsLoading] = useState(false); // NEW: loader state
 
-    // Get today's date in YYYY-MM-DD format for min attribute
     const today = new Date();
     const minDate = today.toISOString().split("T")[0];
 
     const handleChange = (e) => {
-        setFormData((prev) => ({
-            ...prev,
-            [e.target.name]: e.target.value,
-        }));
+        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const handleError = (err) =>
-        toast.error(err, {
-            position: "bottom-left",
-        });
-    const handleSuccess = (msg) =>
-        toast.success(msg, {
-            position: "bottom-left",
-        });
+    const handleError = (err) => toast.error(err, { position: "bottom-left" });
+    const handleSuccess = (msg) => toast.success(msg, { position: "bottom-left" });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true); // start loader
         try {
-            const { data } = await axios.post(
-                `${server}/createproject`,
-                { ...formData },
-                { withCredentials: true }
-            );
-
+            const { data } = await axios.post(`${server}/createproject`, formData, { withCredentials: true });
             const { message, success } = data;
 
             if (success) {
                 handleSuccess(message);
                 setTimeout(() => {
-                    navigate("/clientdashboard", {
-                        state: { toastMessage: "New Project Created Successfully" },
-                    });
+                    navigate("/clientdashboard", { state: { toastMessage: "New Project Created Successfully" } });
                 }, 500);
             } else {
                 handleError(message);
             }
         } catch (err) {
             handleError("Posting Project failed. Please try again.");
+        } finally {
+            setIsLoading(false); // stop loader
         }
+
         setFormData({ title: "", description: "", budget: "", deadline: "", category: "" });
     };
 
@@ -149,16 +138,25 @@ const PostProject = () => {
                             onChange={handleChange}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             required
-                            min={minDate} // restrict past dates
+                            min={minDate}
                         />
                     </div>
 
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition"
+                        disabled={isLoading}
+                        className={`w-full bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2 ${isLoading ? "opacity-70 cursor-not-allowed" : ""
+                            }`}
                     >
-                        Post Project
+                        {isLoading ? (
+                            <>
+                                <Loader className="w-5 h-5 animate-spin" />
+                                Posting...
+                            </>
+                        ) : (
+                            "Post Project"
+                        )}
                     </button>
                 </form>
             </div>
