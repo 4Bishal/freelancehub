@@ -9,9 +9,17 @@ export default function Footer() {
                     Freelance<span className="text-blue-600">Hub</span>
                 </div>
 
-                {/* Copyright */}
+                {/* Copyright & Built By */}
                 <p className="text-sm text-center md:text-left text-gray-600">
-                    &copy; {new Date().getFullYear()} FreelanceHub. All rights reserved.
+                    &copy; {new Date().getFullYear()} FreelanceHub. All rights reserved. — Built by{" "}
+                    <a
+                        href="https://www.bhandari-bishal.com.np"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                    >
+                        Bishal Bhandari
+                    </a>
                 </p>
 
                 {/* Social Icons */}
